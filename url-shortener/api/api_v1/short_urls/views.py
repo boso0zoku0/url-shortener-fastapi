@@ -1,8 +1,10 @@
 from fastapi import HTTPException, status, Request
-from schemas.short_url import ShortUrl
-from fastapi import APIRouter
+from rich.json import JSON
 
-from .short_urls.crud import SHORT_URLS
+from schemas.short_url import *
+from fastapi import APIRouter
+import random
+from api.api_v1.short_urls.crud import SHORT_URLS
 
 router = APIRouter(prefix="/short-urls", tags=["Short URLs"])
 
@@ -11,6 +13,11 @@ router = APIRouter(prefix="/short-urls", tags=["Short URLs"])
 def root(request: Request):
     data = request.url.replace(path="/docs", query="")
     return {"Hello": "Y", "data": data}
+
+
+@router.post("/", response_model=ShortUrl, status_code=status.HTTP_201_CREATED)
+def create_short_url(short_url: Annotated[ShortUrlCreate, JSON]):
+    return ShortUrl(id=random.randint(0, 10), **short_url.model_dump())
 
 
 @router.get("/{slug}/search")
