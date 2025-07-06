@@ -11,7 +11,8 @@ class ShortUrlBase(BaseModel):
 
 
 class ShortUrl(ShortUrlBase):
-    id: int
+    # id: int
+    pass
 
 
 class ShortUrlCreate(ShortUrlBase):
