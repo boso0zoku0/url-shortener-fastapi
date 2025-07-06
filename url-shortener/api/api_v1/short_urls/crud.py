@@ -19,16 +19,22 @@ class ShortUrlsStorage(BaseModel):
         )
         return short_url
 
+    def delete_by_slug(self, slug: str) -> None:
+        self.slug_by_short_urls.pop(slug, None)
 
-storage = ShortUrlsStorage()
+    def delete(self, short_url: ShortUrl) -> None:
+        return self.delete_by_slug(slug=short_url.slug)
 
-storage.create(
+
+storage_short_urls = ShortUrlsStorage()
+
+storage_short_urls.create(
     ShortUrlCreate(
         target_url=AnyHttpUrl("https://www.example.com"),
         slug="example",
     ),
 )
-storage.create(
+storage_short_urls.create(
     ShortUrlCreate(
         target_url=AnyHttpUrl("https://www.google.com"),
         slug="search",
