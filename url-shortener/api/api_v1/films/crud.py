@@ -8,7 +8,7 @@ class FilmsStorage(BaseModel):
     def get_films(self) -> list[FilmsGet]:
         return list(self.slug_by_films.values())
 
-    def get_by_slug_film(self, slug: str) -> FilmsGet | None:
+    def get_by_slug(self, slug: str) -> FilmsGet | None:
         return self.slug_by_films.get(slug)
 
     def create_film(self, create_films: FilmsCreate) -> FilmsGet:
@@ -16,10 +16,16 @@ class FilmsStorage(BaseModel):
         self.slug_by_films[new_film.slug] = new_film
         return new_film
 
+    def delete_by_slug(self, slug: str) -> None:
+        self.slug_by_films.pop(slug, None)
 
-storage = FilmsStorage()
+    def delete(self, film_url: FilmsGet) -> None:
+        return self.delete_by_slug(slug=film_url.slug)
 
-storage.create_film(
+
+storage_films = FilmsStorage()
+
+storage_films.create_film(
     FilmsCreate(
         name="Криминальное чтиво",
         description="Нелинейная криминальная драма",
@@ -28,7 +34,7 @@ storage.create_film(
     )
 )
 
-storage.create_film(
+storage_films.create_film(
     FilmsCreate(
         name="Интерстеллар",
         description="Космическая одиссея о спасении человечества",
@@ -37,7 +43,7 @@ storage.create_film(
     )
 )
 
-storage.create_film(
+storage_films.create_film(
     FilmsCreate(
         name="Матрица",
         description="Реальность иллюзия виртуального мира",
