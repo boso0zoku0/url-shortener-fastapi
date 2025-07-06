@@ -8,4 +8,4 @@ class FilmsBase(BaseModel):
 
 
 class Films(FilmsBase):
-    id: int
+    slug: str
