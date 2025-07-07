@@ -22,6 +22,11 @@ class FilmsStorage(BaseModel):
     def delete(self, film_url: FilmsGet) -> None:
         return self.delete_by_slug(slug=film_url.slug)
 
+    def update(self, film: FilmsGet, film_updated: FilmsUpdate) -> FilmsGet:
+        for k, v in film_updated:
+            setattr(film, k, v)
+        return film
+
 
 storage_films = FilmsStorage()
 
