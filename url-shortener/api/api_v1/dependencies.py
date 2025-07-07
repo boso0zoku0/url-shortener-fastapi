@@ -1,6 +1,6 @@
 from schemas.short_url import ShortUrl
 from schemas.films import FilmsGet
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, Depends
 from api.api_v1.short_urls.crud import storage_short_urls
 from api.api_v1.films.crud import storage_films
 
@@ -21,3 +21,9 @@ def prefetch_url_film(slug: str):
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND, detail=f"URL {slug!r} not found"
     )
+
+
+def get_film_by_slug_exc(slug=Depends(storage_films.get_by_slug)):
+    if slug is None:
+        raise HTTPException(status_code=404, detail=f"Film {slug} not found")
+    return slug
