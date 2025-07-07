@@ -10,16 +10,20 @@ ShortAnnotated_30_symbol = Annotated[str, MaxLen(30)]
 
 class ShortUrlBase(BaseModel):
     target_url: AnyHttpUrl
-    description: ShortAnnotated_30_symbol | None = ""
+    description: ShortAnnotated_30_symbol = ""
 
 
 class ShortUrl(ShortUrlBase):
-    # id: int
     slug: str
+    visits: int = 42
 
 
 class ShortUrlCreate(ShortUrlBase):
     slug: ShortAnnotated_10_symbol
+
+
+class ShortUrlRead(ShortUrlBase):
+    slug: str
 
 
 class ShortUrlUpdate(ShortUrlBase):
