@@ -3,9 +3,12 @@ from typing import Annotated
 from annotated_types import Len, MaxLen
 
 
+ShortAnnotated_10_symbol = Annotated[str, MaxLen(50)]
+
+
 class FilmsBase(BaseModel):
     name: str
-    description: Annotated[str, MaxLen(50)] | None = ""
+    description: ShortAnnotated_10_symbol | None = ""
     year_release: int
     slug: str
 
@@ -19,4 +22,11 @@ class FilmsCreate(FilmsGet):
 
 
 class FilmsUpdate(FilmsGet):
-    description: Annotated[str, MaxLen(50)]
+    description: ShortAnnotated_10_symbol
+
+
+class FilmsUpdatePartial(FilmsGet):
+    name: str | None = None
+    description: ShortAnnotated_10_symbol | None = None
+    year_release: int | None = None
+    slug: str | None = None
