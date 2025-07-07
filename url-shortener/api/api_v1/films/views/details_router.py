@@ -1,11 +1,11 @@
 from typing import Annotated
 
-from fastapi import HTTPException, Depends
+from fastapi import Depends
 from starlette import status
 
-from api.api_v1.dependencies import prefetch_url_film
+from api.api_v1.dependencies import prefetch_url_film, get_film_by_slug_exc
 from api.api_v1.films.crud import storage_films
-from schemas.films import FilmsGet
+from schemas.films import FilmsGet, FilmsUpdate
 from fastapi import APIRouter
 
 router = APIRouter(
@@ -24,19 +24,16 @@ router = APIRouter(
     },
 )
 
+FilmBySlug = Annotated[FilmsGet, Depends(prefetch_url_film)]
 
-@router.get("/search/", response_model=FilmsGet)
-def search_film_by_slug(slug: str):
-    get_film = storage_films.get_by_slug(slug=slug)
-    if get_film is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail=f"Film {slug} not found"
-        )
-    return get_film
+
+@router.get("/", response_model=FilmsGet)
+def search_film_by_slug(slug=Depends(storage_films.get_by_slug)):
+    return get_film_by_slug_exc(slug)
 
 
 @router.delete(
-    "/delete/",
+    "/",
     status_code=status.HTTP_204_NO_CONTENT,
     responses={
         status.HTTP_404_NOT_FOUND: {
@@ -53,3 +50,8 @@ def search_film_by_slug(slug: str):
 )
 def delete_film(url: Annotated[FilmsGet, Depends(prefetch_url_film)]):
     return storage_films.delete(film_url=url)
+
+
+@router.put("/", response_model=FilmsGet)
+def search_film_by_slug(film: FilmBySlug, film_updated: FilmsUpdate) -> FilmsGet:
+    return storage_films.update(film=film, film_updated=film_updated)
