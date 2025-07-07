@@ -5,7 +5,7 @@ from starlette import status
 
 from api.api_v1.dependencies import prefetch_url
 from api.api_v1.short_urls.crud import storage_short_urls
-from schemas.short_url import ShortUrl
+from schemas.short_url import ShortUrl, ShortUrlUpdate
 
 
 router = APIRouter(
@@ -24,12 +24,19 @@ router = APIRouter(
     },
 )
 
+ShortUrlBySlug = Annotated[ShortUrl, Depends(prefetch_url)]
+
 
 @router.get("/")
-def redirect(url: Annotated[ShortUrl, Depends(prefetch_url)]):
+def redirect(url: ShortUrlBySlug):
     return url
 
 
-@router.delete("/delete", status_code=status.HTTP_204_NO_CONTENT)
-def delete_slug(url: Annotated[ShortUrl, Depends(prefetch_url)]):
+@router.delete("/", status_code=status.HTTP_204_NO_CONTENT)
+def delete_slug(url: ShortUrlBySlug):
     return storage_short_urls.delete(short_url=url)
+
+
+@router.put("/", response_model=ShortUrl)
+def put_short_url(url: ShortUrlBySlug, short_url_update: ShortUrlUpdate):
+    return storage_short_urls.update(short_url=url, short_url_update=short_url_update)
