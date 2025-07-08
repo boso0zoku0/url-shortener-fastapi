@@ -5,7 +5,7 @@ from starlette import status
 
 from api.api_v1.dependencies import prefetch_url_film, get_film_by_slug_exc
 from api.api_v1.films.crud import storage_films
-from schemas.films import FilmsGet, FilmsUpdate, FilmsUpdatePartial
+from schemas.films import FilmsRead, FilmsUpdate, FilmsUpdatePartial
 from fastapi import APIRouter
 
 router = APIRouter(
@@ -24,10 +24,10 @@ router = APIRouter(
     },
 )
 
-FilmBySlug = Annotated[FilmsGet, Depends(prefetch_url_film)]
+FilmBySlug = Annotated[FilmsRead, Depends(prefetch_url_film)]
 
 
-@router.get("/", response_model=FilmsGet)
+@router.get("/", response_model=FilmsRead)
 def search_film_by_slug(slug=Depends(storage_films.get_by_slug)):
     return get_film_by_slug_exc(slug)
 
@@ -48,15 +48,15 @@ def search_film_by_slug(slug=Depends(storage_films.get_by_slug)):
         },
     },
 )
-def delete_film(url: Annotated[FilmsGet, Depends(prefetch_url_film)]):
+def delete_film(url: Annotated[FilmsRead, Depends(prefetch_url_film)]):
     return storage_films.delete(film_url=url)
 
 
-@router.put("/", response_model=FilmsGet)
-def put_film(film: FilmBySlug, film_update: FilmsUpdate) -> FilmsGet:
+@router.put("/", response_model=FilmsRead)
+def put_film(film: FilmBySlug, film_update: FilmsUpdate) -> FilmsRead:
     return storage_films.update(film=film, film_update=film_update)
 
 
-@router.patch("/", response_model=FilmsGet)
-def patch_film(film: FilmBySlug, film_update: FilmsUpdatePartial) -> FilmsGet:
+@router.patch("/", response_model=FilmsRead)
+def patch_film(film: FilmBySlug, film_update: FilmsUpdatePartial) -> FilmsRead:
     return storage_films.update_partial(film=film, film_update_partial=film_update)
