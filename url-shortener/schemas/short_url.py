@@ -13,13 +13,13 @@ class ShortUrlBase(BaseModel):
     description: ShortAnnotated_30_symbol = ""
 
 
+class ShortUrlCreate(ShortUrlBase):
+    slug: ShortAnnotated_10_symbol
+
+
 class ShortUrl(ShortUrlBase):
     slug: str
     visits: int = 42
-
-
-class ShortUrlCreate(ShortUrlBase):
-    slug: ShortAnnotated_10_symbol
 
 
 class ShortUrlRead(ShortUrlBase):
