@@ -1,14 +1,14 @@
 from starlette import status
 
 from api.api_v1.films.crud import storage_films
-from schemas.films import FilmsGet, FilmsCreate
+from schemas.films import FilmsRead, FilmsCreate
 
 from fastapi import APIRouter
 
 router = APIRouter(prefix="/films", tags=["Films"])
 
 
-@router.get("/", response_model=list[FilmsGet])
+@router.get("/", response_model=list[FilmsRead])
 def show_films():
     return storage_films.get_films()
 
