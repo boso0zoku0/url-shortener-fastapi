@@ -13,19 +13,23 @@ class FilmsBase(BaseModel):
     slug: str
 
 
-class FilmsGet(FilmsBase):
+class Films(FilmsBase):
+    notes: dict[str, str]
+
+
+class FilmsRead(FilmsBase):
     pass
 
 
-class FilmsCreate(FilmsGet):
+class FilmsCreate(FilmsBase):
     slug: Annotated[str, Len(min_length=3, max_length=50)]
 
 
-class FilmsUpdate(FilmsGet):
+class FilmsUpdate(FilmsBase):
     description: ShortAnnotated_10_symbol
 
 
-class FilmsUpdatePartial(FilmsGet):
+class FilmsUpdatePartial(FilmsBase):
     name: str | None = None
     description: ShortAnnotated_10_symbol | None = None
     year_release: int | None = None
