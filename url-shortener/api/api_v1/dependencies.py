@@ -2,7 +2,7 @@ from schemas.short_url import ShortUrl
 from schemas.films import FilmsRead
 from fastapi import HTTPException, status, Depends
 from api.api_v1.short_urls.crud import storage
-from api.api_v1.films.crud import storage_films
+from api.api_v1.films.crud import storage
 
 
 def prefetch_url(slug: str):
@@ -15,7 +15,7 @@ def prefetch_url(slug: str):
 
 
 def prefetch_url_film(slug: str):
-    url: FilmsRead | None = storage_films.get_by_slug(slug=slug)
+    url: FilmsRead | None = storage.get_by_slug(slug=slug)
     if url:
         return url
     raise HTTPException(
@@ -23,7 +23,7 @@ def prefetch_url_film(slug: str):
     )
 
 
-def get_film_by_slug_exc(slug=Depends(storage_films.get_by_slug)):
+def get_film_by_slug_exc(slug=Depends(storage.get_by_slug)):
     if slug is None:
         raise HTTPException(status_code=404, detail=f"Film {slug} not found")
     return slug
