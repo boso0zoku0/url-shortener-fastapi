@@ -1,6 +1,6 @@
 from starlette import status
 
-from api.api_v1.films.crud import storage_films
+from api.api_v1.films.crud import storage
 from schemas.films import FilmsRead, FilmsCreate
 
 from fastapi import APIRouter
@@ -10,7 +10,7 @@ router = APIRouter(prefix="/films", tags=["Films"])
 
 @router.get("/", response_model=list[FilmsRead])
 def show_films():
-    return storage_films.get_films()
+    return storage.get_films()
 
 
 @router.post(
@@ -19,4 +19,4 @@ def show_films():
     status_code=status.HTTP_201_CREATED,
 )
 def create_film(film_create: FilmsCreate):
-    return storage_films.create_film(create_films=film_create)
+    return storage.create_film(create_films=film_create)
