@@ -1,12 +1,12 @@
 from schemas.short_url import ShortUrl
 from schemas.films import FilmsRead
 from fastapi import HTTPException, status, Depends
-from api.api_v1.short_urls.crud import storage_short_urls
+from api.api_v1.short_urls.crud import storage
 from api.api_v1.films.crud import storage_films
 
 
 def prefetch_url(slug: str):
-    url: ShortUrl | None = storage_short_urls.get_by_slug(slug=slug)
+    url: ShortUrl | None = storage.get_by_slug(slug=slug)
     if url:
         return url
     raise HTTPException(
