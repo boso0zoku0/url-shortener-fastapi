@@ -21,6 +21,16 @@ class FilmsStorage(BaseModel):
             return FilmsStorage
         return cls.model_validate_json(SHORT_URLS_STORAGE_FILEPATH.read_text())
 
+    def init_storage_from_state(self):
+        try:
+            data = FilmsStorage.from_state()
+        except ValidationError:
+            self.save_state()
+            log.warning("Rewritten storage file due to validation error")
+            return
+        self.slug_by_films.update(data.slug_by_films)
+        log.warning("Recovered data from storage file.")
+
     def get_films(self) -> list[FilmsRead]:
         return list(self.slug_by_films.values())
 
@@ -58,8 +68,4 @@ class FilmsStorage(BaseModel):
         return film
 
 
-try:
-    storage = FilmsStorage.from_state()
-except ValidationError:
-    storage = FilmsStorage()
-    storage.write_text_in_file()
+storage = FilmsStorage()
