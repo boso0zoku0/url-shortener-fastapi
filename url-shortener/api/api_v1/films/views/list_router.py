@@ -3,13 +3,13 @@ from starlette import status
 from api.api_v1.films.crud import storage
 from schemas.films import FilmsRead, FilmsCreate
 
-from fastapi import APIRouter, BackgroundTasks, Depends
+from fastapi import APIRouter, Depends
 import logging
-from api.api_v1.dependencies import save_storage_state
+from api.api_v1.dependencies import api_token_required
 
 log = logging.getLogger(__name__)
 router = APIRouter(
-    prefix="/films", tags=["Films"], dependencies=[Depends(save_storage_state)]
+    prefix="/films", tags=["Films"], dependencies=[Depends(api_token_required)]
 )
 
 
@@ -20,10 +20,10 @@ router = APIRouter(
 
 
 @router.get("/", response_model=list[FilmsRead])
-def show_films(_=Depends(save_storage_state)):
+def show_films():
     return storage.get_films()
 
 
 @router.post("/", response_model=FilmsCreate, status_code=status.HTTP_201_CREATED)
-def create_film(film_create: FilmsCreate, _=Depends(save_storage_state)):
+def create_film(film_create: FilmsCreate):
     return storage.create_film(create_films=film_create)
