@@ -65,6 +65,7 @@ class FilmsStorage(BaseModel):
     ) -> FilmsRead:
         for k, v in film_update_partial.model_dump(exclude_unset=True).items():
             setattr(film, k, v)
+        log.info("Updated film to %s", film)
         # self.save_state()
         return film
 
