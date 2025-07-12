@@ -6,7 +6,7 @@ from starlette import status
 from api.api_v1.dependencies import prefetch_url_film, get_film_by_slug_exc
 from api.api_v1.films.crud import storage
 from schemas.films import FilmsRead, FilmsUpdate, FilmsUpdatePartial
-from fastapi import APIRouter, BackgroundTasks
+from fastapi import APIRouter
 
 router = APIRouter(
     prefix="/{slug}",
@@ -48,25 +48,15 @@ def search_film_by_slug(slug=Depends(storage.get_by_slug)):
         },
     },
 )
-def delete_film(
-    background_tasks: BackgroundTasks,
-    url: Annotated[FilmsRead, Depends(prefetch_url_film)],
-) -> None:
-    background_tasks.add_task(storage.save_state)
+def delete_film(url: Annotated[FilmsRead, Depends(prefetch_url_film)]) -> None:
     return storage.delete(film_url=url)
 
 
 @router.put("/", response_model=FilmsRead)
-def put_film(
-    film: FilmBySlug, film_update: FilmsUpdate, background_tasks: BackgroundTasks
-) -> FilmsRead:
-    background_tasks.add_task(storage.save_state)
+def put_film(film: FilmBySlug, film_update: FilmsUpdate) -> FilmsRead:
     return storage.update(film=film, film_update=film_update)
 
 
 @router.patch("/", response_model=FilmsRead)
-def patch_film(
-    film: FilmBySlug, film_update: FilmsUpdatePartial, background_tasks: BackgroundTasks
-) -> FilmsRead:
-    background_tasks.add_task(storage.save_state)
+def patch_film(film: FilmBySlug, film_update: FilmsUpdatePartial) -> FilmsRead:
     return storage.update_partial(film=film, film_update_partial=film_update)
