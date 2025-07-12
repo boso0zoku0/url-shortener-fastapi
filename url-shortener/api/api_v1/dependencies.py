@@ -1,11 +1,13 @@
 from schemas.short_url import ShortUrl
 from schemas.films import FilmsRead
-from fastapi import HTTPException, status, Depends, BackgroundTasks
+from fastapi import HTTPException, status, Depends, BackgroundTasks, Request
 from api.api_v1.short_urls.crud import storage
 from api.api_v1.films.crud import storage as film_storage
 import logging
 
 log = logging.getLogger(__name__)
+
+UNSAFE_METHODS = frozenset(["PUT", "PATCH", "DELETE", "POST"])
 
 
 def prefetch_url(slug: str):
@@ -35,8 +37,12 @@ def get_film_by_slug_exc(slug: str = Depends(film_storage.get_by_slug)):
 
 def save_storage_state(
     background_tasks: BackgroundTasks,
+    request: Request,
 ):
 
     yield
-    log.info("Add background task to save storage")
-    background_tasks.add_task(storage.save_state)
+    if request.method in UNSAFE_METHODS:
+        log.info("method: %s", request.method)
+        log.info("Add background task to save storage")
+        background_tasks.add_task(storage.save_state)
+    return
