@@ -1,13 +1,25 @@
+from typing import Annotated
+
 from schemas.short_url import ShortUrl
 from schemas.films import FilmsRead
-from fastapi import HTTPException, status, Depends, BackgroundTasks, Request
 from api.api_v1.short_urls.crud import storage
 from api.api_v1.films.crud import storage as film_storage
+from core.config import API_TOKENS
+
+from fastapi import HTTPException, status, Depends, BackgroundTasks, Request, Query
 import logging
+
 
 log = logging.getLogger(__name__)
 
-UNSAFE_METHODS = frozenset(["PUT", "PATCH", "DELETE", "POST"])
+UNSAFE_METHODS = frozenset(
+    {
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE",
+    }
+)
 
 
 def prefetch_url(slug: str):
@@ -46,3 +58,13 @@ def save_storage_state(
         log.info("Add background task to save storage")
         background_tasks.add_task(storage.save_state)
     return
+
+
+def api_token_required(
+    api_token: Annotated[str, Query()],
+    _=Depends(save_storage_state),
+):
+    if api_token not in API_TOKENS:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid API token"
+        )
