@@ -10,8 +10,9 @@ class FilmsStorage(BaseModel):
     slug_by_films: dict[str, FilmsRead] = {}
 
     def save_state(self):
-        log.info("Saved short urls storage state")
-        SHORT_URLS_STORAGE_FILEPATH.write_text(self.model_dump_json(indent=4))
+        # log.info("Saved short urls storage state")
+        for _ in range(30000):
+            SHORT_URLS_STORAGE_FILEPATH.write_text(self.model_dump_json(indent=4))
         log.warning("Saved films storage state")
 
     @classmethod
@@ -38,15 +39,15 @@ class FilmsStorage(BaseModel):
         return self.slug_by_films.get(slug)
 
     def create_film(self, create_films: FilmsCreate) -> FilmsRead:
-        new_film = FilmsRead(**create_films.model_dump())
-        self.slug_by_films[new_film.slug] = new_film
-        self.save_state()
-        log.info("Created film %s", new_film)
-        return new_film
+        add_film = FilmsRead(**create_films.model_dump())
+        self.slug_by_films[add_film.slug] = add_film
+        # self.save_state()
+        log.info("Created film %s", add_film)
+        return add_film
 
     def delete_by_slug(self, slug: str) -> None:
         self.slug_by_films.pop(slug, None)
-        self.save_state()
+        # self.save_state()
         log.info("Deleted film %s", slug)
 
     def delete(self, film_url: FilmsRead) -> None:
@@ -55,7 +56,7 @@ class FilmsStorage(BaseModel):
     def update(self, film: FilmsRead, film_update: FilmsUpdate) -> FilmsRead:
         for k, v in film_update:
             setattr(film, k, v)
-        self.save_state()
+            # self.save_state()
         log.info("Updated film to %s", film)
         return film
 
@@ -64,7 +65,7 @@ class FilmsStorage(BaseModel):
     ) -> FilmsRead:
         for k, v in film_update_partial.model_dump(exclude_unset=True).items():
             setattr(film, k, v)
-        self.save_state()
+        # self.save_state()
         return film
 
 
