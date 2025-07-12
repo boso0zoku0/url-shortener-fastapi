@@ -1,4 +1,4 @@
-from fastapi import FastAPI, status, HTTPException
+from fastapi import FastAPI, status, HTTPException, Depends
 from schemas.films import *
 from api import router as api_router
 import logging
