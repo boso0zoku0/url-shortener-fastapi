@@ -3,34 +3,34 @@ from typing import Annotated
 from annotated_types import Len, MaxLen
 
 
-ShortAnnotated_10_symbol = Annotated[str, MaxLen(50)]
+ShortAnnotated_description = Annotated[str, MaxLen(50)]
+ShortAnnotated_slug = Annotated[str, MaxLen(15)]
 
 
 class FilmsBase(BaseModel):
     name: str
-    description: ShortAnnotated_10_symbol | None = ""
+    description: ShortAnnotated_description | None = ""
     year_release: int
-    slug: str
-
-
-class Films(FilmsBase):
-    notes: dict[str, str]
-
-
-class FilmsRead(FilmsBase):
-    pass
 
 
 class FilmsCreate(FilmsBase):
-    slug: Annotated[str, Len(min_length=3, max_length=50)]
+    slug: ShortAnnotated_slug
+
+
+class Films(FilmsBase):
+    notes: str
+    slug: ShortAnnotated_slug
+
+
+class FilmsRead(FilmsBase):
+    slug: ShortAnnotated_slug
 
 
 class FilmsUpdate(FilmsBase):
-    description: ShortAnnotated_10_symbol
+    description: ShortAnnotated_description
 
 
 class FilmsUpdatePartial(FilmsBase):
     name: str | None = None
-    description: ShortAnnotated_10_symbol | None = None
+    description: ShortAnnotated_description | None = None
     year_release: int | None = None
-    slug: str | None = None

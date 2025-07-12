@@ -4,7 +4,7 @@ from annotated_types import Len, MaxLen
 from fastapi import Form
 from pydantic import BaseModel, AnyHttpUrl
 
-ShortAnnotated_10_symbol = Annotated[str, Len(min_length=3, max_length=10)]
+ShortAnnotated_10_symbol = Annotated[str, Len(min_length=3, max_length=20)]
 ShortAnnotated_30_symbol = Annotated[str, MaxLen(30)]
 
 
@@ -33,4 +33,3 @@ class ShortUrlUpdate(ShortUrlBase):
 class ShortUrlUpdatePartial(ShortUrlBase):
     target_url: AnyHttpUrl | None = None
     description: ShortAnnotated_30_symbol | None = None
-    slug: ShortAnnotated_10_symbol | None = None
