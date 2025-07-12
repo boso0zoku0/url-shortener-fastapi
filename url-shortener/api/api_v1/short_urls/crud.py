@@ -11,7 +11,7 @@ class ShortUrlsStorage(BaseModel):
     slug_by_short_urls: dict[str, ShortUrl] = {}
 
     def save_state(self) -> None:
-        for _ in range(30000):
+        for _ in range(15000):
             SHORT_URLS_STORAGE_FILEPATH.write_text(self.model_dump_json(indent=4))
         log.warning("Saved short urls storage state")
 
