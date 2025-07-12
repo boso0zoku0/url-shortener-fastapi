@@ -3,15 +3,28 @@ from starlette import status
 from api.api_v1.films.crud import storage
 from schemas.films import FilmsRead, FilmsCreate
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 import logging
 from api.api_v1.dependencies import api_token_required
 
 log = logging.getLogger(__name__)
-router = APIRouter(
-    prefix="/films", tags=["Films"], dependencies=[Depends(api_token_required)]
-)
 
+
+router = APIRouter(
+    prefix="/films",
+    tags=["Films"],
+    dependencies=[Depends(api_token_required)],
+    responses={
+        status.HTTP_401_UNAUTHORIZED: {
+            "description": "Unauthenticated. Only for unsafe methods.",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Invalid API token"},
+                }
+            },
+        },
+    },
+)
 
 # def write_notification(email: str, message=""):
 #     with open("log.txt", mode="w") as email_file:
