@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, BackgroundTasks
+from fastapi import APIRouter, Depends
 from starlette import status
 
 from api.api_v1.dependencies import prefetch_url
@@ -39,8 +39,7 @@ def redirect(url: ShortUrlBySlug):
 
 
 @router.delete("/", status_code=status.HTTP_204_NO_CONTENT)
-def delete_slug(url: ShortUrlBySlug, background_tasks: BackgroundTasks) -> None:
-    background_tasks.add_task(storage.save_state)
+def delete_slug(url: ShortUrlBySlug) -> None:
     return storage.delete(short_url=url)
 
 
@@ -48,9 +47,7 @@ def delete_slug(url: ShortUrlBySlug, background_tasks: BackgroundTasks) -> None:
 def put_short_url(
     url: ShortUrlBySlug,
     short_url_update: ShortUrlUpdate,
-    background_tasks: BackgroundTasks,
 ):
-    background_tasks.add_task(storage.save_state)
     return storage.update(short_url=url, short_url_update=short_url_update)
 
 
@@ -58,9 +55,7 @@ def put_short_url(
 def patch_short_url(
     url: ShortUrlBySlug,
     short_url_update_partial: ShortUrlUpdatePartial,
-    background_tasks: BackgroundTasks,
 ):
-    background_tasks.add_task(storage.save_state)
     return storage.update_partial(
         short_url=url, short_url_update_partial=short_url_update_partial
     )
