@@ -3,9 +3,14 @@ from starlette import status
 
 from api.api_v1.short_urls.crud import storage
 from schemas.short_url import ShortUrl, ShortUrlCreate, ShortUrlRead
-from fastapi import BackgroundTasks
+from fastapi import Depends
+from api.api_v1.dependencies import save_storage_state
 
-router = APIRouter(prefix="/short-urls", tags=["Short URLs"])
+router = APIRouter(
+    prefix="/short-urls",
+    tags=["Short URLs"],
+    dependencies=[Depends(save_storage_state)],
+)
 
 
 @router.get("/read-urls", response_model=list[ShortUrl])
@@ -14,8 +19,7 @@ def read_short_urls_list() -> list[ShortUrlRead]:
 
 
 @router.post("/", response_model=ShortUrlRead, status_code=status.HTTP_201_CREATED)
-def create_short_url(short_url: ShortUrlCreate, background_tasks: BackgroundTasks):
-    background_tasks.add_task(storage.save_state)
+def create_short_url(short_url: ShortUrlCreate, _=Depends(save_storage_state)):
     return storage.create(short_url)
 
 
