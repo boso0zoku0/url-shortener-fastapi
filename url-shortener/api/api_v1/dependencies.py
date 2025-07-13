@@ -4,10 +4,15 @@ from schemas.short_url import ShortUrl
 from schemas.films import FilmsRead
 from api.api_v1.short_urls.crud import storage
 from api.api_v1.films.crud import storage as film_storage
-from core.config import API_TOKENS
+from core.config import API_TOKENS, DB_USERS
 
 from fastapi import HTTPException, status, Depends, BackgroundTasks, Request, Header
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi.security import (
+    HTTPAuthorizationCredentials,
+    HTTPBearer,
+    HTTPBasic,
+    HTTPBasicCredentials,
+)
 import logging
 
 
@@ -16,6 +21,12 @@ log = logging.getLogger(__name__)
 static_token = HTTPBearer(
     scheme_name="Static API token",
     description="Your Static API token from the developer portal",
+    auto_error=False,
+)
+
+basic_credentials = HTTPBasic(
+    scheme_name="Basic API token",
+    description="Your Basic API token from the developer portal",
     auto_error=False,
 )
 
@@ -68,7 +79,8 @@ def save_storage_state(
     return
 
 
-def api_token_required(
+# вход по токену(HttpBearer-HTTPAuthorizationCredentials)
+def validate_by_static_token(
     request: Request,
     api_token: Annotated[
         HTTPAuthorizationCredentials | None, Depends(static_token)
@@ -77,9 +89,7 @@ def api_token_required(
     if request.method not in UNSAFE_METHODS:
         return
 
-    if (
-        not api_token
-    ):  # проверка если токен не был передан(уже после проверки на unsafe методы)
+    if not api_token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="API token is required",
@@ -91,24 +101,24 @@ def api_token_required(
         )
 
 
-# def api_token_required(
-#     request: Request,
-#     api_token: Annotated[
-#         HTTPAuthorizationCredentials | None,
-#         Depends(static_token),
-#     ] = None,
-# ):
-#     if request.method not in UNSAFE_METHODS:
-#         return
-#
-#     if not api_token:
-#         raise HTTPException(
-#             status_code=status.HTTP_401_UNAUTHORIZED,
-#             detail="API token is required",
-#         )
+# вход по username/password(HttpBasic-HTTPBasicCredentials)
+def basic_auth_validation(
+    credentials: Annotated[
+        HTTPBasicCredentials | None, Depends(basic_credentials)
+    ] = None,
+):
 
-# if api_token.credentials not in API_TOKENS:
-#     raise HTTPException(
-#         status_code=status.HTTP_401_UNAUTHORIZED,
-#         detail="Invalid API token",
-#     )
+    if not credentials:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User credentials required. Invalid username or password",
+            headers={"WWW-Authenticate": "Basic"},
+        )
+
+    if (
+        credentials
+        and credentials.username in DB_USERS
+        and DB_USERS[credentials.username] == credentials.password
+    ):
+        log.info("user is logged %s", credentials.username)
+        return
