@@ -15,3 +15,5 @@ LOG_FORMAT: str = (
 API_TOKENS: frozenset[str] = frozenset(
     {"eD83xIM7oJMn-WmuiDJPJQ", "HDk4YMx_Lu54ETlueqxTdw"}
 )
+
+DB_USERS: dict[str, str] = {"user1": "password1"}
