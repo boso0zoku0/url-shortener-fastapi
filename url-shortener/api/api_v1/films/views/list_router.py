@@ -8,7 +8,7 @@ import logging
 from api.api_v1.dependencies import (
     validate_by_static_token,
     save_storage_state,
-    basic_auth_validation,
+    api_token_or_basic_auth_for_unsafe_methods,
 )
 
 log = logging.getLogger(__name__)
@@ -17,7 +17,10 @@ log = logging.getLogger(__name__)
 router = APIRouter(
     prefix="/films",
     tags=["Films"],
-    dependencies=[Depends(basic_auth_validation), Depends(save_storage_state)],
+    dependencies=[
+        Depends(api_token_or_basic_auth_for_unsafe_methods),
+        Depends(save_storage_state),
+    ],
     responses={
         status.HTTP_401_UNAUTHORIZED: {
             "description": "Unauthenticated. Only for unsafe methods.",
