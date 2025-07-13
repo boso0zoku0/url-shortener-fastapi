@@ -12,4 +12,6 @@ LOG_FORMAT: str = (
 )
 
 
-API_TOKENS = frozenset({"eD83xIM7oJMn-WmuiDJPJQ", "HDk4YMx_Lu54ETlueqxTdw"})
+API_TOKENS: frozenset[str] = frozenset(
+    {"eD83xIM7oJMn-WmuiDJPJQ", "HDk4YMx_Lu54ETlueqxTdw"}
+)
