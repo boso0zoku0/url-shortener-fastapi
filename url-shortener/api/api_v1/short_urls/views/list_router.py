@@ -4,12 +4,18 @@ from starlette import status
 from api.api_v1.short_urls.crud import storage
 from schemas.short_url import ShortUrl, ShortUrlCreate, ShortUrlRead
 from fastapi import Depends
-from api.api_v1.dependencies import save_storage_state, basic_auth_validation
+from api.api_v1.dependencies import (
+    save_storage_state,
+    api_token_or_basic_auth_for_unsafe_methods,
+)
 
 router = APIRouter(
     prefix="/short-urls",
     tags=["Short URLs"],
-    dependencies=[Depends(basic_auth_validation), Depends(save_storage_state)],
+    dependencies=[
+        Depends(api_token_or_basic_auth_for_unsafe_methods),
+        Depends(save_storage_state),
+    ],
     responses={
         status.HTTP_401_UNAUTHORIZED: {
             "description": "Unauthenticated. Only for unsafe methods.",
