@@ -7,10 +7,17 @@ from api.api_v1.films.crud import storage as film_storage
 from core.config import API_TOKENS
 
 from fastapi import HTTPException, status, Depends, BackgroundTasks, Request, Header
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 import logging
 
 
 log = logging.getLogger(__name__)
+
+static_token = HTTPBearer(
+    scheme_name="Static API token",
+    description="Your Static API token from the developer portal",
+    auto_error=False,
+)
 
 UNSAFE_METHODS = frozenset(
     {
@@ -61,12 +68,44 @@ def save_storage_state(
 
 
 def api_token_required(
-    request: Request, api_token: Annotated[str, Header(alias="x-auth-token")] = ""
+    request: Request,
+    api_token: Annotated[
+        HTTPAuthorizationCredentials | None, Depends(static_token)
+    ] = None,
 ):
     if request.method not in UNSAFE_METHODS:
         return
-    if api_token not in API_TOKENS:
+    # if api_token not in API_TOKENS:
+    if not api_token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid API token",
         )
+
+    if api_token.credentials not in API_TOKENS:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="Invalid API token"
+        )
+
+
+# def api_token_required(
+#     request: Request,
+#     api_token: Annotated[
+#         HTTPAuthorizationCredentials | None,
+#         Depends(static_token),
+#     ] = None,
+# ):
+#     if request.method not in UNSAFE_METHODS:
+#         return
+#
+#     if not api_token:
+#         raise HTTPException(
+#             status_code=status.HTTP_401_UNAUTHORIZED,
+#             detail="API token is required",
+#         )
+
+# if api_token.credentials not in API_TOKENS:
+#     raise HTTPException(
+#         status_code=status.HTTP_401_UNAUTHORIZED,
+#         detail="Invalid API token",
+#     )
