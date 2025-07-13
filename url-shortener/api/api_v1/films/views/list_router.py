@@ -5,7 +5,7 @@ from schemas.films import FilmsRead, FilmsCreate
 
 from fastapi import APIRouter, Depends, status
 import logging
-from api.api_v1.dependencies import api_token_required
+from api.api_v1.dependencies import api_token_required, save_storage_state
 
 log = logging.getLogger(__name__)
 
@@ -13,7 +13,7 @@ log = logging.getLogger(__name__)
 router = APIRouter(
     prefix="/films",
     tags=["Films"],
-    dependencies=[Depends(api_token_required)],
+    dependencies=[Depends(api_token_required), Depends(save_storage_state)],
     responses={
         status.HTTP_401_UNAUTHORIZED: {
             "description": "Unauthenticated. Only for unsafe methods.",
