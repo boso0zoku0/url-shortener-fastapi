@@ -19,6 +19,7 @@ static_token = HTTPBearer(
     auto_error=False,
 )
 
+
 UNSAFE_METHODS = frozenset(
     {
         "POST",
@@ -75,11 +76,13 @@ def api_token_required(
 ):
     if request.method not in UNSAFE_METHODS:
         return
-    # if api_token not in API_TOKENS:
-    if not api_token:
+
+    if (
+        not api_token
+    ):  # проверка если токен не был передан(уже после проверки на unsafe методы)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid API token",
+            detail="API token is required",
         )
 
     if api_token.credentials not in API_TOKENS:
