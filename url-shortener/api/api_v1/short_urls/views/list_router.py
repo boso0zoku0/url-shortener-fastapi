@@ -9,7 +9,7 @@ from api.api_v1.dependencies import save_storage_state, api_token_required
 router = APIRouter(
     prefix="/short-urls",
     tags=["Short URLs"],
-    dependencies=[Depends(api_token_required)],
+    dependencies=[Depends(api_token_required), Depends(save_storage_state)],
     responses={
         status.HTTP_401_UNAUTHORIZED: {
             "description": "Unauthenticated. Only for unsafe methods.",
