@@ -1,12 +1,14 @@
 from typing import Annotated
 
+from core.config import REDIS_TOKENS_SET_NAME
+from .redis_db import redis_tokens
+
 from schemas.short_url import ShortUrl
 from schemas.films import FilmsRead
 from api.api_v1.short_urls.crud import storage
 from api.api_v1.films.crud import storage as film_storage
-from core.config import API_TOKENS, DB_USERS
-
-from fastapi import HTTPException, status, Depends, BackgroundTasks, Request, Header
+from core.config import DB_USERS
+from fastapi import HTTPException, status, Depends, BackgroundTasks, Request
 from fastapi.security import (
     HTTPAuthorizationCredentials,
     HTTPBearer,
@@ -79,14 +81,20 @@ def save_storage_state(
     return
 
 
-def validate_api_token(
-    api_token: Annotated[HTTPAuthorizationCredentials, Depends(static_token)],
-):
+def validate_api_token(api_token: HTTPAuthorizationCredentials):
+    if redis_tokens.sismember(REDIS_TOKENS_SET_NAME, api_token.credentials):
+        return
+    raise HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN, detail="Invalid API token"
+    )
 
-    if api_token.credentials not in API_TOKENS:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, detail="Invalid API token"
-        )
+
+# def validate_api_token(api_token: HTTPAuthorizationCredentials):
+#     if api_token.credentials:
+#         return
+#     raise HTTPException(
+#         status_code=status.HTTP_403_FORBIDDEN, detail="Invalid API token"
+#     )
 
 
 # вход по токену(HttpBearer-HTTPAuthorizationCredentials)
@@ -101,13 +109,10 @@ def validate_by_static_token(
 
     validate_api_token(api_token=api_token)
 
-    # if api_token.credentials not in API_TOKENS:
-    #     raise HTTPException(
-    #         status_code=status.HTTP_403_FORBIDDEN, detail="Invalid API token"
-    #     )
 
-
-def validate_basic_auth(credentials: HTTPBasicCredentials | None):
+def validate_basic_auth(
+    credentials: HTTPBasicCredentials | None,
+):
 
     if not credentials:
         raise HTTPException(
