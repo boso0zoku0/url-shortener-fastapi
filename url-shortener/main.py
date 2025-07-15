@@ -1,9 +1,9 @@
-from fastapi import FastAPI, status, HTTPException, Depends
 from schemas.films import *
 from api import router as api_router
 import logging
 from core import config
 from app_lifespan import lifespan
+from fastapi import FastAPI
 
 log = logging.basicConfig(format=config.LOG_FORMAT, level=config.LOG_LEVEL)
 app = FastAPI(lifespan=lifespan)
