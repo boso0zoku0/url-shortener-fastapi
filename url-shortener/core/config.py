@@ -1,3 +1,5 @@
+import secrets
+from abc import ABC, abstractmethod
 from pathlib import Path
 import logging
 
@@ -29,3 +31,6 @@ REDIS_TOKENS_SET_NAME = "tokens"
 
 # 1) "wdjklpodfqwejklmnm - redis токены"
 # 2) "safdksajkwrjfd"
+
+
+# добавление, генерация, генерация и сохранение
