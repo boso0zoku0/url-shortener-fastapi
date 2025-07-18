@@ -1,4 +1,4 @@
-from schemas.films import *
+
 from api import router as api_router
 import logging
 from core import config
