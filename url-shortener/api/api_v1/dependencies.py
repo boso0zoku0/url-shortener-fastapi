@@ -1,8 +1,10 @@
 from typing import Annotated
 
-from core.config import REDIS_TOKENS_SET_NAME
-from .redis_db import redis_tokens
+# from core import config
+# from redis_db import rediss
 
+
+from api.api_v1.redis_db import redis as db_redis
 from schemas.short_url import ShortUrl
 from schemas.films import FilmsRead
 from api.api_v1.short_urls.crud import storage
@@ -82,7 +84,7 @@ def save_storage_state(
 
 
 def validate_api_token(api_token: HTTPAuthorizationCredentials):
-    if redis_tokens.sismember(REDIS_TOKENS_SET_NAME, api_token.credentials):
+    if db_redis.token_exists(token=api_token.credentials):
         return
     raise HTTPException(
         status_code=status.HTTP_403_FORBIDDEN, detail="Invalid API token"
