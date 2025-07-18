@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from starlette.requests import Request
+
 
 from api import router as api_router
 import logging
