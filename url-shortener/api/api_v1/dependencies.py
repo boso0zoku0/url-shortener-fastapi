@@ -1,15 +1,14 @@
 from typing import Annotated
 
-# from core import config
-# from redis_db import rediss
-
-
-from api.api_v1.redis_db import redis as db_redis
+from api.api_v1.auth.services.redis_tokens_helper import db_redis_tokens
+from api.api_v1.auth.services.redis_users_helper import db_redis_users
 from schemas.short_url import ShortUrl
 from schemas.films import FilmsRead
 from api.api_v1.short_urls.crud import storage
 from api.api_v1.films.crud import storage as film_storage
-from core.config import DB_USERS
+
+# from core.config import DB_USERS
+from core import config
 from fastapi import HTTPException, status, Depends, BackgroundTasks, Request
 from fastapi.security import (
     HTTPAuthorizationCredentials,
@@ -84,7 +83,7 @@ def save_storage_state(
 
 
 def validate_api_token(api_token: HTTPAuthorizationCredentials):
-    if db_redis.token_exists(token=api_token.credentials):
+    if db_redis_tokens.token_exists(token=api_token.credentials):
         return
     raise HTTPException(
         status_code=status.HTTP_403_FORBIDDEN, detail="Invalid API token"
@@ -112,21 +111,38 @@ def validate_by_static_token(
     validate_api_token(api_token=api_token)
 
 
-def validate_basic_auth(
-    credentials: HTTPBasicCredentials | None,
-):
+#
+# def validate_basic_auth(
+#     credentials: HTTPBasicCredentials | None,
+# ):
+#
+#     if not credentials:
+#         raise HTTPException(
+#             status_code=status.HTTP_401_UNAUTHORIZED,
+#             detail="Invalid username or password",
+#             headers={"WWW-Authenticate": "Basic"},
+#         )
+#
+#     if (
+#         credentials
+#         and credentials.username in config.DB_USERS
+#         and config.DB_USERS[credentials.username] == credentials.password
+#     ):
+#         log.info("user is logged %s", credentials.username)
+#         return
 
+
+def validate_basic_auth(credentials: HTTPBasicCredentials | None):
     if not credentials:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid username or password",
             headers={"WWW-Authenticate": "Basic"},
         )
-
     if (
         credentials
-        and credentials.username in DB_USERS
-        and DB_USERS[credentials.username] == credentials.password
+        and credentials.username in config.REDIS_USERS_SET_NAME
+        and config.REDIS_DB_USERS[credentials.username] == credentials.password
     ):
         log.info("user is logged %s", credentials.username)
         return
