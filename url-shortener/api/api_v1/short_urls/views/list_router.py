@@ -4,7 +4,7 @@ from starlette import status
 from api.api_v1.short_urls.crud import storage
 from schemas.short_url import ShortUrl, ShortUrlCreate, ShortUrlRead
 from fastapi import Depends
-from api.api_v1.redis_db import redis as db_redis
+from api.api_v1.auth.services.redis_tokens_helper import db_redis_tokens
 from api.api_v1.dependencies import (
     save_storage_state,
     api_token_or_basic_auth_for_unsafe_methods,
@@ -34,7 +34,7 @@ router = APIRouter(
 
 @router.post("/add-token")
 def generate_and_save_token(token: str):
-    return db_redis.generate_and_save_token(token)
+    return db_redis_tokens.generate_and_save_token(token)
 
 
 @router.get("/read-urls", response_model=list[ShortUrl])
@@ -54,4 +54,4 @@ def search_url(slug: str):
 
 @router.post("/add-token", status_code=status.HTTP_201_CREATED)
 def add_token(token):
-    return db_redis.add_token(token)
+    return db_redis_tokens.add_token(token)
