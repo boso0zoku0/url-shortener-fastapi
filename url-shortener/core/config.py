@@ -1,5 +1,3 @@
-import secrets
-from abc import ABC, abstractmethod
 from pathlib import Path
 import logging
 
@@ -24,13 +22,16 @@ DB_USERS: dict[str, str] = {"user1": "password1"}
 # вход через редис
 REDIS_HOST = "localhost"
 REDIS_PORT = 6379
+
+
 REDIS_DB = 0
+
 REDIS_DB_TOKENS = 1
 REDIS_TOKENS_SET_NAME = "tokens"
+
+REDIS_DB_USERS = 2
+REDIS_USERS_SET_NAME = "users"
 
 
 # 1) "wdjklpodfqwejklmnm - redis токены"
 # 2) "safdksajkwrjfd"
-
-
-# добавление, генерация, генерация и сохранение
