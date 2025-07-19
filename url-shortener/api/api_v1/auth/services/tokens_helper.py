@@ -1,0 +1,21 @@
+import secrets
+from abc import ABC, abstractmethod
+
+
+class AbstractTokenHelper(ABC):
+
+    @abstractmethod
+    def token_exists(self, token) -> bool:
+        pass
+
+    @abstractmethod
+    def add_token(self, token) -> None:
+        pass
+
+    @classmethod
+    def generate_token(cls):
+        return secrets.token_urlsafe(16)
+
+    def generate_and_save_token(self):
+        generate = self.generate_token()
+        self.add_token(generate)
