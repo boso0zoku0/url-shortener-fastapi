@@ -23,7 +23,7 @@ class RedisTokensHelper(AbstractTokenHelper):
         self.redis.sadd(self.tokens_set, token)
 
     def generate_token(self):
-        random_token = secrets.token_urlsafe(16)
+        secrets.token_urlsafe(16)
 
     def generate_and_save_token(self, token: str):
         save_random_token = self.generate_token()
