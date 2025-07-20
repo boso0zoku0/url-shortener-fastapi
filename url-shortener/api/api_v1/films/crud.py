@@ -41,6 +41,7 @@ class FilmsStorage(BaseModel):
     def create_film(self, create_films: FilmsCreate) -> FilmsRead:
         add_film = FilmsRead(**create_films.model_dump())
         self.slug_by_films[add_film.slug] = add_film
+
         # self.save_state()
         log.info("Created film %s", add_film)
         return add_film
