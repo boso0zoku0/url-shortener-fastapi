@@ -1,14 +1,14 @@
 from typing import Annotated
 
-from api.api_v1.auth.services.redis_tokens_helper import db_redis_tokens
-from api.api_v1.auth.services.redis_users_helper import db_redis_users
+
+from api.api_v1.auth.services import db_redis_users
+from api.api_v1.auth.services import db_redis_tokens
 from schemas.short_url import ShortUrl
 from schemas.films import FilmsRead
 from api.api_v1.short_urls.crud import storage
 from api.api_v1.films.crud import storage as film_storage
 
 # from core.config import DB_USERS
-from core import config
 from fastapi import HTTPException, status, Depends, BackgroundTasks, Request
 from fastapi.security import (
     HTTPAuthorizationCredentials,
@@ -107,6 +107,11 @@ def validate_by_static_token(
 ):
     if request.method not in UNSAFE_METHODS:
         return
+    if not api_token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="API token is required",
+        )
 
     validate_api_token(api_token=api_token)
 
@@ -133,19 +138,15 @@ def validate_by_static_token(
 
 
 def validate_basic_auth(credentials: HTTPBasicCredentials | None):
-    if not credentials:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid username or password",
-            headers={"WWW-Authenticate": "Basic"},
-        )
-    if (
-        credentials
-        and credentials.username in config.REDIS_USERS_SET_NAME
-        and config.REDIS_DB_USERS[credentials.username] == credentials.password
+    if credentials and db_redis_users.validate_user_password(
+        username=credentials.username, password=credentials.password
     ):
-        log.info("user is logged %s", credentials.username)
         return
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Invalid username or password",
+        headers={"WWW-Authenticate": "Basic"},
+    )
 
 
 # вход по username/password(HttpBasic-HTTPBasicCredentials)
@@ -164,8 +165,12 @@ def basic_auth_for_unsafe_methods(
 
 def api_token_or_basic_auth_for_unsafe_methods(
     request: Request,
-    api_token: Annotated[HTTPAuthorizationCredentials, Depends(static_token)],
-    credentials: Annotated[HTTPBasicCredentials, Depends(basic_credentials)],
+    api_token: Annotated[
+        HTTPAuthorizationCredentials | None, Depends(static_token)
+    ] = None,
+    credentials: Annotated[
+        HTTPBasicCredentials | None, Depends(basic_credentials)
+    ] = None,
 ):
     if request.method not in UNSAFE_METHODS:
         return
