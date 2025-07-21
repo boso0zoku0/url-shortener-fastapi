@@ -1,8 +1,5 @@
-from http.client import HTTPException
-from fastapi import HTTPException, status
 from schemas.films import *
-from pydantic import BaseModel, ValidationError
-from core.config import SHORT_URLS_STORAGE_FILEPATH
+from pydantic import BaseModel
 import logging
 from core import config
 from redis import Redis
@@ -38,9 +35,6 @@ class FilmsStorage(BaseModel):
         get_data = redis.hget(name=config.REDIS_FILMS_HASH_NAME, key=slug)
         if get_data:
             return FilmsRead.model_validate_json(get_data)
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Films not found"
-        )
 
     def create_film(self, create_films: FilmsCreate) -> FilmsRead:
         add_film = FilmsRead(**create_films.model_dump())
@@ -58,7 +52,7 @@ class FilmsStorage(BaseModel):
     def update(self, film: FilmsRead, film_update: FilmsUpdate) -> FilmsRead:
         for k, v in film_update:
             setattr(film, k, v)
-            self.save_films(film)
+        self.save_films(film)
         log.info("Updated film to %s", film)
         return film
 
@@ -67,7 +61,7 @@ class FilmsStorage(BaseModel):
     ) -> FilmsRead:
         for k, v in film_update_partial.model_dump(exclude_unset=True).items():
             setattr(film, k, v)
-            self.save_films(film)
+        self.save_films(film)
         log.info("Updated film to %s", film)
         return film
 
