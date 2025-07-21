@@ -1,5 +1,5 @@
 from schemas.films import *
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel, ValidationError, model_validator
 from core.config import SHORT_URLS_STORAGE_FILEPATH
 import logging
 from core import config
@@ -46,7 +46,9 @@ class FilmsStorage(BaseModel):
         return list(self.slug_by_films.values())
 
     def get_by_slug(self, slug: str) -> FilmsRead | None:
-        return self.slug_by_films.get(slug)
+        get_data = redis.hget(name=config.REDIS_FILMS_HASH_NAME, key=slug)
+        if get_data:
+            return FilmsRead.model_validate_json(get_data)
 
     def create_film(self, create_films: FilmsCreate) -> FilmsRead:
         add_film = FilmsRead(**create_films.model_dump())
