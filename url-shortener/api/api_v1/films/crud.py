@@ -1,5 +1,7 @@
+from http.client import HTTPException
+from fastapi import HTTPException, status
 from schemas.films import *
-from pydantic import BaseModel, ValidationError, model_validator
+from pydantic import BaseModel, ValidationError
 from core.config import SHORT_URLS_STORAGE_FILEPATH
 import logging
 from core import config
@@ -59,17 +61,19 @@ class FilmsStorage(BaseModel):
         get_data = redis.hget(name=config.REDIS_FILMS_HASH_NAME, key=slug)
         if get_data:
             return FilmsRead.model_validate_json(get_data)
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Films not found"
+        )
 
     def create_film(self, create_films: FilmsCreate) -> FilmsRead:
         add_film = FilmsRead(**create_films.model_dump())
         self.save_films(add_film)
-        log.info("Created film %s", add_film)
+        log.info("Created film: %s", add_film)
         return add_film
 
     def delete_by_slug(self, slug: str) -> None:
-        self.slug_by_films.pop(slug, None)
-        # self.save_state()
-        log.info("Deleted film %s", slug)
+        redis.hdel(config.REDIS_FILMS_HASH_NAME, slug)
+        log.info("Deleted film: %s", slug)
 
     def delete(self, film_url: FilmsRead) -> None:
         return self.delete_by_slug(slug=film_url.slug)

@@ -1,3 +1,4 @@
+from fastapi import HTTPException, status
 from pydantic import ValidationError
 from redis import Redis
 
@@ -58,6 +59,9 @@ class ShortUrlsStorage(BaseModel):
         get_db = redis.hget(name=config.REDIS_SHORT_URLS_HASH_NAME, key=slug)
         if get_db:
             return ShortUrl.model_validate_json(get_db)
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Short url not found %s"
+        )
 
     def create(self, short_url_create: ShortUrlCreate) -> ShortUrl:
         short_url = ShortUrl(**short_url_create.model_dump())
