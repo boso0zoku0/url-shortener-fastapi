@@ -33,9 +33,14 @@ router = APIRouter(
 ShortUrlBySlug = Annotated[ShortUrlCreate, Depends(prefetch_url)]
 
 
-@router.get("/")
-def redirect(url: ShortUrlBySlug):
-    return url
+# @router.get("/")
+# def redirect(url: ShortUrlBySlug):
+#     return url
+
+
+@router.get("/", response_model=ShortUrlRead)
+def get_short_url_by_slug(slug: str):
+    return storage.get_by_slug(slug)
 
 
 @router.delete("/", status_code=status.HTTP_204_NO_CONTENT)
