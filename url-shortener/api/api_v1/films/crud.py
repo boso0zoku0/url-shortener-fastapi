@@ -2,8 +2,18 @@ from schemas.films import *
 from pydantic import BaseModel, ValidationError
 from core.config import SHORT_URLS_STORAGE_FILEPATH
 import logging
+from core import config
+from redis import Redis
 
 log = logging.getLogger(__name__)
+
+
+redis = Redis(
+    host=config.REDIS_HOST,
+    port=config.REDIS_PORT,
+    db=config.REDIS_DB_FILMS,
+    decode_responses=True,
+)
 
 
 class FilmsStorage(BaseModel):
@@ -40,8 +50,11 @@ class FilmsStorage(BaseModel):
 
     def create_film(self, create_films: FilmsCreate) -> FilmsRead:
         add_film = FilmsRead(**create_films.model_dump())
-        self.slug_by_films[add_film.slug] = add_film
-
+        redis.hset(
+            name=config.REDIS_FILMS_HASH_NAME,
+            key=add_film.slug,
+            value=add_film.model_dump_json(),
+        )
         # self.save_state()
         log.info("Created film %s", add_film)
         return add_film

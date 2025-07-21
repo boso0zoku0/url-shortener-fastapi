@@ -27,11 +27,14 @@ REDIS_PORT = 6379
 REDIS_DB = 0
 
 REDIS_DB_TOKENS = 1
-REDIS_TOKENS_SET_NAME = "tokens"
-
 REDIS_DB_USERS = 2
-REDIS_USERS_SET_NAME = "users"
+REDIS_DB_SHORT_URLS = 3
+REDIS_DB_FILMS = 4
 
+REDIS_TOKENS_NAME = "tokens"
+REDIS_USERS_NAME = "users"
+REDIS_SHORT_URLS_HASH_NAME = "short_urls"
+REDIS_FILMS_HASH_NAME = "films"
 
 # 1) "wdjklpodfqwejklmnm - redis токены"
 # 2) "safdksajkwrjfd"
