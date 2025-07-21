@@ -42,6 +42,13 @@ class FilmsStorage(BaseModel):
         self.slug_by_films.update(data.slug_by_films)
         log.warning("Recovered data from storage file.")
 
+    def save_films(self, film: FilmsRead):
+        redis.hset(
+            name=config.REDIS_FILMS_HASH_NAME,
+            key=film.slug,
+            value=film.model_dump_json(),
+        )
+
     def get_films(self):
         return [
             FilmsRead.model_validate_json(value)
@@ -55,12 +62,7 @@ class FilmsStorage(BaseModel):
 
     def create_film(self, create_films: FilmsCreate) -> FilmsRead:
         add_film = FilmsRead(**create_films.model_dump())
-        redis.hset(
-            name=config.REDIS_FILMS_HASH_NAME,
-            key=add_film.slug,
-            value=add_film.model_dump_json(),
-        )
-        # self.save_state()
+        self.save_films(add_film)
         log.info("Created film %s", add_film)
         return add_film
 
@@ -75,7 +77,7 @@ class FilmsStorage(BaseModel):
     def update(self, film: FilmsRead, film_update: FilmsUpdate) -> FilmsRead:
         for k, v in film_update:
             setattr(film, k, v)
-            # self.save_state()
+            self.save_films(film)
         log.info("Updated film to %s", film)
         return film
 
@@ -84,8 +86,8 @@ class FilmsStorage(BaseModel):
     ) -> FilmsRead:
         for k, v in film_update_partial.model_dump(exclude_unset=True).items():
             setattr(film, k, v)
+            self.save_films(film)
         log.info("Updated film to %s", film)
-        # self.save_state()
         return film
 
 
