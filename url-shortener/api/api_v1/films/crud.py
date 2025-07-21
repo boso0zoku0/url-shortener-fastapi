@@ -21,29 +21,6 @@ redis = Redis(
 class FilmsStorage(BaseModel):
     slug_by_films: dict[str, FilmsRead] = {}
 
-    def save_state(self):
-        # log.info("Saved short urls storage state")
-        for _ in range(15000):
-            SHORT_URLS_STORAGE_FILEPATH.write_text(self.model_dump_json(indent=4))
-        log.warning("Saved films storage state")
-
-    @classmethod
-    def from_state(cls):
-        if not SHORT_URLS_STORAGE_FILEPATH.exists():
-            log.warning("No short urls storage found")
-            return FilmsStorage
-        return cls.model_validate_json(SHORT_URLS_STORAGE_FILEPATH.read_text())
-
-    def init_storage_from_state(self):
-        try:
-            data = FilmsStorage.from_state()
-        except ValidationError:
-            self.save_state()
-            log.warning("Rewritten storage file due to validation error")
-            return
-        self.slug_by_films.update(data.slug_by_films)
-        log.warning("Recovered data from storage file.")
-
     def save_films(self, film: FilmsRead):
         redis.hset(
             name=config.REDIS_FILMS_HASH_NAME,

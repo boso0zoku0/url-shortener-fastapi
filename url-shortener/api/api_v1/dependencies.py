@@ -8,8 +8,7 @@ from schemas.films import FilmsRead
 from api.api_v1.short_urls.crud import storage
 from api.api_v1.films.crud import storage as film_storage
 
-# from core.config import DB_USERS
-from fastapi import HTTPException, status, Depends, BackgroundTasks, Request
+from fastapi import HTTPException, status, Depends, Request
 from fastapi.security import (
     HTTPAuthorizationCredentials,
     HTTPBearer,
@@ -69,33 +68,12 @@ def get_film_by_slug_exc(slug: str = Depends(film_storage.get_by_slug)):
     return slug
 
 
-def save_storage_state(
-    background_tasks: BackgroundTasks,
-    request: Request,
-):
-
-    yield
-    if request.method in UNSAFE_METHODS:
-        log.info("method: %s", request.method)
-        log.info("Add background task to save storage")
-        background_tasks.add_task(storage.save_state)
-    return
-
-
 def validate_api_token(api_token: HTTPAuthorizationCredentials):
     if db_redis_tokens.token_exists(token=api_token.credentials):
         return
     raise HTTPException(
         status_code=status.HTTP_403_FORBIDDEN, detail="Invalid API token"
     )
-
-
-# def validate_api_token(api_token: HTTPAuthorizationCredentials):
-#     if api_token.credentials:
-#         return
-#     raise HTTPException(
-#         status_code=status.HTTP_403_FORBIDDEN, detail="Invalid API token"
-#     )
 
 
 # вход по токену(HttpBearer-HTTPAuthorizationCredentials)
@@ -114,27 +92,6 @@ def validate_by_static_token(
         )
 
     validate_api_token(api_token=api_token)
-
-
-#
-# def validate_basic_auth(
-#     credentials: HTTPBasicCredentials | None,
-# ):
-#
-#     if not credentials:
-#         raise HTTPException(
-#             status_code=status.HTTP_401_UNAUTHORIZED,
-#             detail="Invalid username or password",
-#             headers={"WWW-Authenticate": "Basic"},
-#         )
-#
-#     if (
-#         credentials
-#         and credentials.username in config.DB_USERS
-#         and config.DB_USERS[credentials.username] == credentials.password
-#     ):
-#         log.info("user is logged %s", credentials.username)
-#         return
 
 
 def validate_basic_auth(credentials: HTTPBasicCredentials | None):

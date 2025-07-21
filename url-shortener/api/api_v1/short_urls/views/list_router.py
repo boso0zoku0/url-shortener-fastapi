@@ -6,7 +6,6 @@ from schemas.short_url import ShortUrl, ShortUrlCreate, ShortUrlRead
 from fastapi import Depends
 from api.api_v1.auth.services.redis_tokens_helper import db_redis_tokens
 from api.api_v1.dependencies import (
-    save_storage_state,
     api_token_or_basic_auth_for_unsafe_methods,
 )
 
@@ -15,7 +14,6 @@ router = APIRouter(
     tags=["Short URLs"],
     dependencies=[
         Depends(api_token_or_basic_auth_for_unsafe_methods),
-        Depends(save_storage_state),
     ],
     responses={
         status.HTTP_401_UNAUTHORIZED: {

@@ -5,11 +5,7 @@ from schemas.films import FilmsRead, FilmsCreate
 
 from fastapi import APIRouter, Depends, status
 import logging
-from api.api_v1.dependencies import (
-    validate_by_static_token,
-    save_storage_state,
-    api_token_or_basic_auth_for_unsafe_methods,
-)
+from api.api_v1.dependencies import api_token_or_basic_auth_for_unsafe_methods
 
 log = logging.getLogger(__name__)
 
@@ -19,7 +15,6 @@ router = APIRouter(
     tags=["Films"],
     dependencies=[
         Depends(api_token_or_basic_auth_for_unsafe_methods),
-        Depends(save_storage_state),
     ],
     responses={
         status.HTTP_401_UNAUTHORIZED: {

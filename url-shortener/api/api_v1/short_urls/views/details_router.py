@@ -6,7 +6,6 @@ from starlette import status
 from api.api_v1.dependencies import prefetch_url
 from api.api_v1.short_urls.crud import storage
 from schemas.short_url import (
-    ShortUrl,
     ShortUrlUpdate,
     ShortUrlUpdatePartial,
     ShortUrlRead,
@@ -31,11 +30,6 @@ router = APIRouter(
 )
 
 ShortUrlBySlug = Annotated[ShortUrlCreate, Depends(prefetch_url)]
-
-
-# @router.get("/")
-# def redirect(url: ShortUrlBySlug):
-#     return url
 
 
 @router.get("/", response_model=ShortUrlRead)

@@ -27,9 +27,6 @@ router = APIRouter(
 FilmBySlug = Annotated[FilmsRead, Depends(prefetch_url_film)]
 
 
-# @router.get("/", response_model=FilmsRead)
-# def search_film_by_slug(slug=Depends(storage.get_by_slug)):
-#     return get_film_by_slug_exc(slug)
 @router.get("/", response_model=FilmsRead)
 def search_film_by_slug(slug: str) -> FilmsRead:
     return storage.get_by_slug(slug)
