@@ -22,8 +22,8 @@ class Films(FilmsBase):
     slug: ShortAnnotated_slug
 
 
-class FilmsRead(FilmsBase):
-    slug: ShortAnnotated_slug
+class FilmsRead(FilmsCreate):
+    pass
 
 
 class FilmsUpdate(FilmsBase):
