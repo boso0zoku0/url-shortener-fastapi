@@ -10,7 +10,7 @@ class RedisUsersHelper(AbstractUserHelper):
         self.redis = Redis(host=host, port=port, db=db, decode_responses=True)
 
     def get_user_password(self, username: str) -> str | None:
-        return self.redis.hget(config.REDIS_USERS_SET_NAME, username)
+        return self.redis.hget(config.REDIS_USERS_NAME, username)
 
     #
     # @classmethod

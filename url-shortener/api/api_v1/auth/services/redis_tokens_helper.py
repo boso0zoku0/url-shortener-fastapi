@@ -34,5 +34,5 @@ db_redis_tokens = RedisTokensHelper(
     host=config.REDIS_HOST,
     port=config.REDIS_PORT,
     db=config.REDIS_DB_TOKENS,
-    tokens_set=config.REDIS_TOKENS_SET_NAME,
+    tokens_set=config.REDIS_TOKENS_NAME,
 )
