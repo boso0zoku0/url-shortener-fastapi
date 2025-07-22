@@ -1,12 +1,14 @@
 from fastapi import APIRouter, HTTPException, status, Depends
 
-from api.api_v1.short_urls.crud import storage
+from api.api_v1.short_urls.crud import storage, ShortUrlAlreadyExists
 from schemas.short_url import ShortUrl, ShortUrlCreate, ShortUrlRead
 from api.api_v1.auth.services.redis_tokens_helper import db_redis_tokens
 from api.api_v1.dependencies import (
     api_token_or_basic_auth_for_unsafe_methods,
 )
+import logging
 
+log = logging.getLogger(__name__)
 
 router = APIRouter(
     prefix="/short-urls",
@@ -50,20 +52,21 @@ def read_short_urls_list() -> list[ShortUrlRead]:
             "content": {
                 "application/json": {
                     "example": {
-                        "detail": "Short Url with slug='foobar' already exists.",
+                        "detail": "Short Url with slug='name' already exists.",
                     },
                 },
             },
         },
     },
 )
-def create_short_url(short_url: ShortUrlCreate):
-    if not storage.get_by_slug(short_url.slug):
-        return storage.create(short_url)
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail=f"Such a short link {short_url.slug!r} already exists",
-    )
+def create_short_url(short_url_in: ShortUrlCreate) -> ShortUrl:
+    try:
+        return storage.create_or_raise_if_exists(short_url_in)
+    except ShortUrlAlreadyExists:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=f"Short URL {short_url_in.slug} already exists",
+        )
 
 
 @router.get("/search", response_model=ShortUrlRead)

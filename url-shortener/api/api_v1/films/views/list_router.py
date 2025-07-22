@@ -1,4 +1,4 @@
-from api.api_v1.films.crud import storage
+from api.api_v1.films.crud import storage, FilmsAlreadyExists
 from schemas.films import FilmsRead, FilmsCreate
 
 from fastapi import APIRouter, Depends, status, HTTPException
@@ -47,7 +47,7 @@ def show_films():
             "content": {
                 "application/json": {
                     "example": {
-                        "detail": "Film with slug='foobar' already exists.",
+                        "detail": "Film with slug='name' already exists.",
                     },
                 },
             },
@@ -55,9 +55,10 @@ def show_films():
     },
 )
 def create_film(film_create: FilmsCreate):
-    if not storage.get_by_slug(slug=film_create.slug):
-        return storage.create_film(create_films=film_create)
-    raise HTTPException(
-        status_code=status.HTTP_409_CONFLICT,
-        detail=f"Such a short link {film_create.slug!r} already exists",
-    )
+    try:
+        return storage.create_or_raise_if_exists(film_create)
+    except FilmsAlreadyExists:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=f"Film with slug={film_create.slug} already exists",
+        )
