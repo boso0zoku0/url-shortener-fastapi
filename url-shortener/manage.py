@@ -1,4 +1,4 @@
-#!/users/bin/env -S uv run --script
+# !/users/bin/env -S uv run --script
 
 from commands import app as run_cli
 
