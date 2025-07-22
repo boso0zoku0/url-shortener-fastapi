@@ -3,6 +3,7 @@ import logging
 from core import config
 from app_lifespan import lifespan
 from fastapi import FastAPI
+import typer
 
 logging.basicConfig(format=config.LOG_FORMAT, level=config.LOG_LEVEL)
 app = FastAPI(lifespan=lifespan)
