@@ -15,6 +15,14 @@ redis = Redis(
 )
 
 
+class FilmsBaseError(Exception):
+    pass
+
+
+class FilmsAlreadyExists(FilmsBaseError):
+    pass
+
+
 class FilmsStorage(BaseModel):
     slug_by_films: dict[str, FilmsRead] = {}
 
@@ -41,6 +49,14 @@ class FilmsStorage(BaseModel):
         self.save_films(add_film)
         log.info("Created film: %s", add_film)
         return add_film
+
+    def exists(self, slug: str) -> bool:
+        return redis.hexists(name=config.REDIS_FILMS_HASH_NAME, key=slug)
+
+    def create_or_raise_if_exists(self, film: FilmsCreate) -> FilmsRead:
+        if not self.exists(film.slug):
+            return storage.create_film(film)
+        raise FilmsAlreadyExists(film.slug)
 
     def delete_by_slug(self, slug: str) -> None:
         redis.hdel(config.REDIS_FILMS_HASH_NAME, slug)
