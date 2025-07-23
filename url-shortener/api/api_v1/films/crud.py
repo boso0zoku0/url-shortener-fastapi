@@ -1,4 +1,4 @@
-from schemas.films import *
+from schemas.film import *
 from pydantic import BaseModel
 import logging
 from core import config
@@ -43,6 +43,7 @@ class FilmsStorage(BaseModel):
         get_data = redis.hget(name=config.REDIS_FILMS_HASH_NAME, key=slug)
         if get_data:
             return FilmsRead.model_validate_json(get_data)
+        return None
 
     def create_film(self, create_films: FilmsCreate) -> FilmsRead:
         add_film = FilmsRead(**create_films.model_dump())

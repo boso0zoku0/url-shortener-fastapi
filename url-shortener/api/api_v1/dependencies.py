@@ -4,7 +4,7 @@ from typing import Annotated
 from api.api_v1.auth.services import db_redis_users
 from api.api_v1.auth.services import db_redis_tokens
 from schemas.short_url import ShortUrl
-from schemas.films import FilmsRead
+from schemas.film import FilmsRead
 from api.api_v1.short_urls.crud import storage
 from api.api_v1.films.crud import storage as film_storage
 

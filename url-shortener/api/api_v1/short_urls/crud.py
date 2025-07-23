@@ -47,6 +47,7 @@ class ShortUrlsStorage(BaseModel):
         get_db = redis.hget(name=config.REDIS_SHORT_URLS_HASH_NAME, key=slug)
         if get_db:
             return ShortUrl.model_validate_json(get_db)
+        return None
 
     def exists(self, slug: str) -> bool:
         return redis.hexists(name=config.REDIS_SHORT_URLS_HASH_NAME, key=slug)
