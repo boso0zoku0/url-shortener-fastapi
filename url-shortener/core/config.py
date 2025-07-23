@@ -35,6 +35,3 @@ REDIS_TOKENS_NAME = "tokens"
 REDIS_USERS_NAME = "users"
 REDIS_SHORT_URLS_HASH_NAME = "short_urls"
 REDIS_FILMS_HASH_NAME = "films"
-
-# 1) "wdjklpodfqwejklmnm - redis токены"
-# 2) "safdksajkwrjfd"

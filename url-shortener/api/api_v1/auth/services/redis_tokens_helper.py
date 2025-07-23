@@ -25,12 +25,16 @@ class RedisTokensHelper(AbstractTokenHelper):
     def get_all_tokens(self) -> list[str]:
         return list(self.redis.smembers(self.tokens_set))
 
-    def generate_token(self):
-        secrets.token_urlsafe(16)
+    def delete_token(self, token: str) -> None:
+        self.redis.srem(self.tokens_set, token)
 
-    def generate_and_save_token(self, token: str):
-        save_random_token = self.generate_token()
-        self.add_token(save_random_token)
+    def generate_token(self):
+        return secrets.token_urlsafe(16)
+
+    def generate_and_save_token(self):
+        token = self.generate_token()
+        self.add_token(token)
+        return token
 
 
 db_redis_tokens = RedisTokensHelper(

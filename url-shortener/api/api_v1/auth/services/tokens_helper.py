@@ -16,6 +16,13 @@ class AbstractTokenHelper(ABC):
     def get_all_tokens(self) -> list[str]:
         pass
 
+    @abstractmethod
+    def delete_token(self, token) -> None:
+        """
+        :param token: удалить токен
+        :return: None
+        """
+
     @classmethod
     def generate_token(cls):
         return secrets.token_urlsafe(16)
