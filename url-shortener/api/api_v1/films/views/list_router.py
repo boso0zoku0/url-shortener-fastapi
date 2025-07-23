@@ -1,5 +1,5 @@
 from api.api_v1.films.crud import storage, FilmsAlreadyExists
-from schemas.films import FilmsRead, FilmsCreate
+from schemas.film import FilmsRead, FilmsCreate
 
 from fastapi import APIRouter, Depends, status, HTTPException
 import logging
