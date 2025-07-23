@@ -10,6 +10,7 @@ from schemas.short_url import (
     ShortUrlUpdatePartial,
     ShortUrlRead,
     ShortUrlCreate,
+    ShortUrl,
 )
 
 
@@ -29,7 +30,7 @@ router = APIRouter(
     },
 )
 
-ShortUrlBySlug = Annotated[ShortUrlCreate, Depends(prefetch_url)]
+ShortUrlBySlug = Annotated[ShortUrl, Depends(prefetch_url)]
 
 
 @router.get("/", response_model=ShortUrlRead)
