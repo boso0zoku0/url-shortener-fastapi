@@ -17,19 +17,24 @@ class ShortUrlCreate(ShortUrlBase):
     slug: ShortAnnotated_10_symbol
 
 
-class ShortUrl(ShortUrlBase):
+class ShortUrl(BaseModel):
+    target_url: AnyHttpUrl
+    description: ShortAnnotated_30_symbol = ""
     slug: str
     visits: int = 42
 
 
-class ShortUrlRead(ShortUrlBase):
+class ShortUrlRead(BaseModel):
+    target_url: AnyHttpUrl
+    description: ShortAnnotated_30_symbol = ""
     slug: str
 
 
-class ShortUrlUpdate(ShortUrlBase):
+class ShortUrlUpdate(BaseModel):
+    target_url: AnyHttpUrl
     description: ShortAnnotated_30_symbol
 
 
-class ShortUrlUpdatePartial(ShortUrlBase):
+class ShortUrlUpdatePartial(BaseModel):
     target_url: AnyHttpUrl | None = None
     description: ShortAnnotated_30_symbol | None = None
