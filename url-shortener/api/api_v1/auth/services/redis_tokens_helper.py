@@ -22,6 +22,9 @@ class RedisTokensHelper(AbstractTokenHelper):
     def add_token(self, token) -> None:
         self.redis.sadd(self.tokens_set, token)
 
+    def get_all_tokens(self) -> list[str]:
+        return list(self.redis.smembers(self.tokens_set))
+
     def generate_token(self):
         secrets.token_urlsafe(16)
 

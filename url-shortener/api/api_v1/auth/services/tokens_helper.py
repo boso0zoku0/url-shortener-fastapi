@@ -12,6 +12,10 @@ class AbstractTokenHelper(ABC):
     def add_token(self, token) -> None:
         pass
 
+    @abstractmethod
+    def get_all_tokens(self) -> list[str]:
+        pass
+
     @classmethod
     def generate_token(cls):
         return secrets.token_urlsafe(16)
