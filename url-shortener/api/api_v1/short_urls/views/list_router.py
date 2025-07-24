@@ -70,10 +70,10 @@ def create_short_url(short_url_in: ShortUrlCreate) -> ShortUrl:
 
 
 @router.get("/search", response_model=ShortUrlRead)
-def search_url(slug: str):
+def search_url(slug: str) -> ShortUrl | None:
     return storage.get_by_slug(slug=slug)
 
 
 @router.post("/add-token", status_code=status.HTTP_201_CREATED)
-def add_token(token):
+def add_token(token: str) -> None:
     return db_redis_tokens.add_token(token)

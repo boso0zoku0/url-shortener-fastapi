@@ -11,10 +11,10 @@ class AbstractUserHelper(ABC):
         """
 
     @classmethod
-    def check_passwords_match(cls, password_1, password_2) -> bool:
+    def check_passwords_match(cls, password_1: str, password_2: str) -> bool:
         return password_1 == password_2
 
-    def validate_user_password(self, username, password) -> bool:
+    def validate_user_password(self, username: str, password: str) -> bool:
         """
         :param username - имя пользователя чей пароль проверить
         :param password - переданный пароль сверить с тем что с БД

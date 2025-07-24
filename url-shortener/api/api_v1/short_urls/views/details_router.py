@@ -9,7 +9,6 @@ from schemas.short_url import (
     ShortUrlUpdate,
     ShortUrlUpdatePartial,
     ShortUrlRead,
-    ShortUrlCreate,
     ShortUrl,
 )
 
@@ -34,7 +33,7 @@ ShortUrlBySlug = Annotated[ShortUrl, Depends(prefetch_url)]
 
 
 @router.get("/", response_model=ShortUrlRead)
-def get_short_url_by_slug(slug: str):
+def get_short_url_by_slug(slug: str) -> ShortUrl | None:
     return storage.get_by_slug(slug)
 
 
@@ -47,7 +46,7 @@ def delete_slug(url: ShortUrlBySlug) -> None:
 def put_short_url(
     url: ShortUrlBySlug,
     short_url_update: ShortUrlUpdate,
-):
+) -> ShortUrl:
     return storage.update(short_url=url, short_url_update=short_url_update)
 
 
@@ -55,7 +54,7 @@ def put_short_url(
 def patch_short_url(
     url: ShortUrlBySlug,
     short_url_update_partial: ShortUrlUpdatePartial,
-):
+) -> ShortUrl:
     return storage.update_partial(
         short_url=url, short_url_update_partial=short_url_update_partial
     )

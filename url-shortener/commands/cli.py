@@ -10,7 +10,7 @@ app = typer.Typer(no_args_is_help=True, rich_markup_mode="rich")
 
 
 @app.callback()
-def callback():
+def callback() -> None:
     """
     Some CLI management commands
     """

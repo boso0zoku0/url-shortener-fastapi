@@ -1,3 +1,5 @@
+__app__ = "app"
+
 from typing import Annotated
 
 import typer
@@ -15,7 +17,7 @@ app = typer.Typer(
 
 
 @app.command()
-def check(token: Annotated[str, typer.Argument(help="The token to check")]):
+def check(token: Annotated[str, typer.Argument(help="The token to check")]) -> None:
     print(
         f"Token [bold]{token}[/bold]",
         (
@@ -27,18 +29,20 @@ def check(token: Annotated[str, typer.Argument(help="The token to check")]):
 
 
 @app.command(name="list")
-def list_check():
+def list_check() -> None:
     print(Markdown("# Available API tokens"))
     print((Markdown("\n- ".join([""] + db_redis_tokens.get_all_tokens()))))
     print()
 
 
 @app.command(name="del")
-def delete_token(token: Annotated[str, typer.Argument(help="The token to delete")]):
+def delete_token(
+    token: Annotated[str, typer.Argument(help="The token to delete")],
+) -> None:
     if db_redis_tokens.token_exists(token):
         db_redis_tokens.delete_token(token)
         print(f"[green]Token: {token.center(10)}Successfully deleted[/green]")
-        return
+
     else:
         print()
         print(f"[red]Invalid token: {token}[/red]".center(10))
@@ -46,7 +50,7 @@ def delete_token(token: Annotated[str, typer.Argument(help="The token to delete"
 
 
 @app.command(name="generate")
-def generate_token():
+def generate_token() -> None:
     token = db_redis_tokens.generate_and_save_token()
     print(
         f"[green]Token [violet]{token}[/violet] was successfully created and saved in the database.[/green]"
@@ -54,7 +58,7 @@ def generate_token():
 
 
 @app.command(name="add")
-def add_token(token: Annotated[str, typer.Argument(help="The token to add")]):
+def add_token(token: Annotated[str, typer.Argument(help="The token to add")]) -> None:
     if not db_redis_tokens.token_exists(token):
         db_redis_tokens.add_token(token)
         print(f"[green]Token added[/green]")

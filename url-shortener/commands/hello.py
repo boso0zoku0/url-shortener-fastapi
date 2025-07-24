@@ -1,3 +1,5 @@
+__app__ = "app"
+
 import typer
 
 from rich import print
@@ -12,5 +14,5 @@ app = typer.Typer(
 
 
 @app.command()
-def hello(str: Annotated[str, typer.Argument(help="Name to greet")]):
-    print(f"[bolt]Hello[/bolt], [green]{str}[/green]")
+def hello(greet: Annotated[str, typer.Argument(help="Name to greet")]) -> None:
+    print(f"[bolt]Hello[/bolt], [green]{greet}[/green]")

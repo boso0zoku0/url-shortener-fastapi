@@ -1,3 +1,7 @@
+__all__ = ("storage", "FilmsAlreadyExists")
+
+from typing import cast
+
 from schemas.film import *
 from pydantic import BaseModel
 import logging
@@ -26,21 +30,29 @@ class FilmsAlreadyExists(FilmsBaseError):
 class FilmsStorage(BaseModel):
     slug_by_films: dict[str, FilmsRead] = {}
 
-    def save_films(self, film: FilmsRead):
+    @classmethod
+    def save_films(cls, film: FilmsRead) -> None:
         redis.hset(
             name=config.REDIS_FILMS_HASH_NAME,
             key=film.slug,
             value=film.model_dump_json(),
         )
 
-    def get_films(self):
-        return [
-            FilmsRead.model_validate_json(value)
-            for value in redis.hvals(name=config.REDIS_FILMS_HASH_NAME)
-        ]
+    @classmethod
+    def get_films(cls) -> list[FilmsRead]:
+        return cast(
+            list[FilmsRead],
+            [
+                FilmsRead.model_validate_json(value)
+                for value in redis.hvals(name=config.REDIS_FILMS_HASH_NAME)
+            ],
+        )
 
-    def get_by_slug(self, slug: str) -> FilmsRead | None:
-        get_data = redis.hget(name=config.REDIS_FILMS_HASH_NAME, key=slug)
+    @classmethod
+    def get_by_slug(cls, slug: str) -> FilmsRead | None:
+        get_data = cast(
+            str | None, redis.hget(name=config.REDIS_FILMS_HASH_NAME, key=slug)
+        )
         if get_data:
             return FilmsRead.model_validate_json(get_data)
         return None
@@ -51,15 +63,17 @@ class FilmsStorage(BaseModel):
         log.info("Created film: %s", add_film)
         return add_film
 
-    def exists(self, slug: str) -> bool:
-        return redis.hexists(name=config.REDIS_FILMS_HASH_NAME, key=slug)
+    @classmethod
+    def exists(cls, slug: str) -> bool:
+        return cast(bool, redis.hexists(name=config.REDIS_FILMS_HASH_NAME, key=slug))
 
     def create_or_raise_if_exists(self, film: FilmsCreate) -> FilmsRead:
         if not self.exists(film.slug):
             return storage.create_film(film)
         raise FilmsAlreadyExists(film.slug)
 
-    def delete_by_slug(self, slug: str) -> None:
+    @classmethod
+    def delete_by_slug(cls, slug: str) -> None:
         redis.hdel(config.REDIS_FILMS_HASH_NAME, slug)
         log.info("Deleted film: %s", slug)
 

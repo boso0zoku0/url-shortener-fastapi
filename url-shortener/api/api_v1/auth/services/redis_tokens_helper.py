@@ -1,4 +1,7 @@
+__all__ = ("db_redis_tokens",)
+
 import secrets
+from typing import cast
 
 from redis import Redis
 
@@ -16,11 +19,11 @@ class RedisTokensHelper(AbstractTokenHelper):
         )
         self.tokens_set = tokens_set
 
-    def token_exists(self, token) -> bool:
+    def token_exists(self, token: str) -> bool:
         return bool(self.redis.sismember(self.tokens_set, token))
 
-    def add_token(self, token) -> None:
-        self.redis.sadd(self.tokens_set, token)
+    def add_token(self, token: str) -> None:
+        cast(str, self.redis.sadd(self.tokens_set, token))
 
     def get_all_tokens(self) -> list[str]:
         return list(self.redis.smembers(self.tokens_set))
@@ -28,10 +31,10 @@ class RedisTokensHelper(AbstractTokenHelper):
     def delete_token(self, token: str) -> None:
         self.redis.srem(self.tokens_set, token)
 
-    def generate_token(self):
+    def generate_token(self) -> str:
         return secrets.token_urlsafe(16)
 
-    def generate_and_save_token(self):
+    def generate_and_save_token(self) -> str:
         token = self.generate_token()
         self.add_token(token)
         return token

@@ -1,9 +1,12 @@
-from fastapi import HTTPException, status
-from redis import Redis
+__all__ = ("storage", "ShortUrlAlreadyExists")
 
+from collections.abc import Awaitable
+from typing import cast
+from redis import Redis
 from schemas.short_url import *
 from core import config
 import logging
+from pydantic import BaseModel
 
 log = logging.getLogger(__name__)
 
@@ -30,27 +33,33 @@ class ShortUrlAlreadyExists(ShortUrlBaseError):
 class ShortUrlsStorage(BaseModel):
     slug_by_short_urls: dict[str, ShortUrl] = {}
 
-    def save_short_url(self, short_url: ShortUrl) -> None:
+    @classmethod
+    def save_short_url(cls, short_url: ShortUrl) -> None:
         redis.hset(
             name=config.REDIS_SHORT_URLS_HASH_NAME,
             key=short_url.slug,
             value=short_url.model_dump_json(),
         )
 
-    def get(self):
+    @classmethod
+    def get(cls) -> list[ShortUrlRead]:
         return [
             ShortUrlRead.model_validate_json(value)
             for value in redis.hvals(name=config.REDIS_SHORT_URLS_HASH_NAME)
         ]
 
-    def get_by_slug(self, slug: str) -> ShortUrl | None:
+    @classmethod
+    def get_by_slug(cls, slug: str) -> ShortUrl | None:
         get_db = redis.hget(name=config.REDIS_SHORT_URLS_HASH_NAME, key=slug)
         if get_db:
             return ShortUrl.model_validate_json(get_db)
         return None
 
-    def exists(self, slug: str) -> bool:
-        return redis.hexists(name=config.REDIS_SHORT_URLS_HASH_NAME, key=slug)
+    @classmethod
+    def exists(cls, slug: str) -> Awaitable[bool] | bool:
+        return cast(
+            bool, redis.hexists(name=config.REDIS_SHORT_URLS_HASH_NAME, key=slug)
+        )
 
     def create(self, short_url_create: ShortUrlCreate) -> ShortUrl:
         short_url = ShortUrl(**short_url_create.model_dump())
@@ -63,7 +72,8 @@ class ShortUrlsStorage(BaseModel):
             return storage.create(short_url_in)
         raise ShortUrlAlreadyExists(short_url_in.slug)
 
-    def delete_by_slug(self, slug: str) -> None:
+    @classmethod
+    def delete_by_slug(cls, slug: str) -> None:
         redis.hdel(config.REDIS_SHORT_URLS_HASH_NAME, slug)
         log.info("Deleted short url %s", slug)
 

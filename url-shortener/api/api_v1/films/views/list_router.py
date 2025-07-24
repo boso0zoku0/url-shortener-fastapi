@@ -1,4 +1,5 @@
 from api.api_v1.films.crud import storage, FilmsAlreadyExists
+
 from schemas.film import FilmsRead, FilmsCreate
 
 from fastapi import APIRouter, Depends, status, HTTPException
@@ -26,14 +27,9 @@ router = APIRouter(
     },
 )
 
-# def write_notification(email: str, message=""):
-#     with open("log.txt", mode="w") as email_file:
-#         content = f"notification for {email}: {message}"
-#         email_file.write(content)
-
 
 @router.get("/", response_model=list[FilmsRead])
-def show_films():
+def show_films() -> list[FilmsRead]:
     return storage.get_films()
 
 
@@ -54,7 +50,7 @@ def show_films():
         },
     },
 )
-def create_film(film_create: FilmsCreate):
+def create_film(film_create: FilmsCreate) -> FilmsRead | None:
     try:
         return storage.create_or_raise_if_exists(film_create)
     except FilmsAlreadyExists:

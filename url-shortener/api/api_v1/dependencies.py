@@ -1,8 +1,10 @@
+__all__ = "db_redis_users"
+
+
 from typing import Annotated
 
-
-from api.api_v1.auth.services import db_redis_users
-from api.api_v1.auth.services import db_redis_tokens
+from api.api_v1.auth.services.redis_users_helper import db_redis_users
+from api.api_v1.auth.services.redis_tokens_helper import db_redis_tokens
 from schemas.short_url import ShortUrl
 from schemas.film import FilmsRead
 from api.api_v1.short_urls.crud import storage
@@ -43,7 +45,7 @@ UNSAFE_METHODS = frozenset(
 )
 
 
-def prefetch_url(slug: str):
+def prefetch_url(slug: str) -> ShortUrl | None:
     url: ShortUrl | None = storage.get_by_slug(slug=slug)
     if url:
         return url
@@ -52,7 +54,7 @@ def prefetch_url(slug: str):
     )
 
 
-def prefetch_url_film(slug: str):
+def prefetch_url_film(slug: str) -> FilmsRead | None:
     url: FilmsRead | None = film_storage.get_by_slug(slug=slug)
     if url:
         return url
@@ -62,13 +64,15 @@ def prefetch_url_film(slug: str):
 
 
 #
-def get_film_by_slug_exc(slug: str = Depends(film_storage.get_by_slug)):
-    if slug is None:
+def get_film_by_slug_exc(
+    slug: FilmsRead | None = Depends(film_storage.get_by_slug),
+) -> FilmsRead | None:
+    if not slug:
         raise HTTPException(status_code=404, detail=f"Slug by Film: {slug} not found")
     return slug
 
 
-def validate_api_token(api_token: HTTPAuthorizationCredentials):
+def validate_api_token(api_token: HTTPAuthorizationCredentials) -> None:
     if db_redis_tokens.token_exists(token=api_token.credentials):
         return
     raise HTTPException(
@@ -82,7 +86,7 @@ def validate_by_static_token(
     api_token: Annotated[
         HTTPAuthorizationCredentials | None, Depends(static_token)
     ] = None,
-):
+) -> None:
     if request.method not in UNSAFE_METHODS:
         return
     if not api_token:
@@ -91,10 +95,10 @@ def validate_by_static_token(
             detail="API token is required",
         )
 
-    validate_api_token(api_token=api_token)
+    return validate_api_token(api_token=api_token)
 
 
-def validate_basic_auth(credentials: HTTPBasicCredentials | None):
+def validate_basic_auth(credentials: HTTPBasicCredentials | None) -> None:
     if credentials and db_redis_users.validate_user_password(
         username=credentials.username, password=credentials.password
     ):
@@ -112,7 +116,7 @@ def basic_auth_for_unsafe_methods(
     credentials: Annotated[
         HTTPBasicCredentials | None, Depends(basic_credentials)
     ] = None,
-):
+) -> None:
 
     if request.method not in UNSAFE_METHODS:
         return
@@ -128,7 +132,7 @@ def api_token_or_basic_auth_for_unsafe_methods(
     credentials: Annotated[
         HTTPBasicCredentials | None, Depends(basic_credentials)
     ] = None,
-):
+) -> None:
     if request.method not in UNSAFE_METHODS:
         return
 
