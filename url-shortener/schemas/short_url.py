@@ -1,8 +1,7 @@
 from typing import Annotated
 
 from annotated_types import Len, MaxLen
-from fastapi import Form
-from pydantic import BaseModel, AnyHttpUrl
+from pydantic import AnyHttpUrl, BaseModel
 
 ShortAnnotated_10_symbol = Annotated[str, Len(min_length=3, max_length=20)]
 ShortAnnotated_30_symbol = Annotated[str, MaxLen(30)]

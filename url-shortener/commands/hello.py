@@ -1,9 +1,9 @@
 __app__ = "app"
 
-import typer
-
-from rich import print
 from typing import Annotated
+
+import typer
+from rich import print
 
 app = typer.Typer(
     name="Greeting",

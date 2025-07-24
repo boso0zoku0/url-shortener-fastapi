@@ -1,10 +1,10 @@
-from api.api_v1.films.crud import storage, FilmsAlreadyExists
-
-from schemas.film import FilmsRead, FilmsCreate
-
-from fastapi import APIRouter, Depends, status, HTTPException
 import logging
+
+from fastapi import APIRouter, Depends, HTTPException, status
+
 from api.api_v1.dependencies import api_token_or_basic_auth_for_unsafe_methods
+from api.api_v1.films.crud import FilmsAlreadyExists, storage
+from schemas.film import FilmsCreate, FilmsRead
 
 log = logging.getLogger(__name__)
 
@@ -28,7 +28,7 @@ router = APIRouter(
 )
 
 
-@router.get("/", response_model=list[FilmsRead])
+@router.get("/")
 def show_films() -> list[FilmsRead]:
     return storage.get_films()
 

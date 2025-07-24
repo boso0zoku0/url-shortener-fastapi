@@ -5,8 +5,8 @@ from typing import Annotated
 import typer
 from rich import print
 from rich.markdown import Markdown
-from api.api_v1.auth.services.redis_tokens_helper import db_redis_tokens
 
+from api.api_v1.auth.services.redis_tokens_helper import db_redis_tokens
 
 app = typer.Typer(
     name="tokens",
@@ -61,7 +61,7 @@ def generate_token() -> None:
 def add_token(token: Annotated[str, typer.Argument(help="The token to add")]) -> None:
     if not db_redis_tokens.token_exists(token):
         db_redis_tokens.add_token(token)
-        print(f"[green]Token added[/green]")
+        print("[green]Token added[/green]")
         return
     else:
         print("[red]Error[/red]")

@@ -1,7 +1,7 @@
-from pydantic import BaseModel
 from typing import Annotated
-from annotated_types import MaxLen
 
+from annotated_types import MaxLen
+from pydantic import BaseModel
 
 ShortAnnotated_description = Annotated[str, MaxLen(50)]
 ShortAnnotated_slug = Annotated[str, MaxLen(15)]

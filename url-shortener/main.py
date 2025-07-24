@@ -1,9 +1,10 @@
-from api import router as api_router
 import logging
-from core import config
-from app_lifespan import lifespan
+
 from fastapi import FastAPI
-import typer
+
+from api import router as api_router
+from app_lifespan import lifespan
+from core import config
 
 logging.basicConfig(format=config.LOG_FORMAT, level=config.LOG_LEVEL)
 app = FastAPI(lifespan=lifespan)

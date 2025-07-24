@@ -2,9 +2,11 @@ __all__ = ("db_redis_users",)
 
 from typing import cast
 
-from .users_helper import AbstractUserHelper
 from redis import Redis
+
 from core import config
+
+from .users_helper import AbstractUserHelper
 
 
 class RedisUsersHelper(AbstractUserHelper):

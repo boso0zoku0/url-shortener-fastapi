@@ -1,24 +1,23 @@
 __all__ = "db_redis_users"
 
 
+import logging
 from typing import Annotated
 
-from api.api_v1.auth.services.redis_users_helper import db_redis_users
-from api.api_v1.auth.services.redis_tokens_helper import db_redis_tokens
-from schemas.short_url import ShortUrl
-from schemas.film import FilmsRead
-from api.api_v1.short_urls.crud import storage
-from api.api_v1.films.crud import storage as film_storage
-
-from fastapi import HTTPException, status, Depends, Request
+from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import (
     HTTPAuthorizationCredentials,
-    HTTPBearer,
     HTTPBasic,
     HTTPBasicCredentials,
+    HTTPBearer,
 )
-import logging
 
+from api.api_v1.auth.services.redis_tokens_helper import db_redis_tokens
+from api.api_v1.auth.services.redis_users_helper import db_redis_users
+from api.api_v1.films.crud import storage as film_storage
+from api.api_v1.short_urls.crud import storage
+from schemas.film import FilmsRead
+from schemas.short_url import ShortUrl
 
 log = logging.getLogger(__name__)
 
