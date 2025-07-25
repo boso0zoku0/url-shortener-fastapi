@@ -1,4 +1,4 @@
-__all__ = "db_redis_users"
+__all__ = ("db_redis_users",)
 
 
 import logging
@@ -62,7 +62,6 @@ def prefetch_url_film(slug: str) -> FilmsRead | None:
     )
 
 
-#
 def get_film_by_slug_exc(
     slug: FilmsRead | None = Depends(film_storage.get_by_slug),
 ) -> FilmsRead | None:
@@ -87,7 +86,7 @@ def validate_by_static_token(
     ] = None,
 ) -> None:
     if request.method not in UNSAFE_METHODS:
-        return
+        return None
     if not api_token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -133,7 +132,7 @@ def api_token_or_basic_auth_for_unsafe_methods(
     ] = None,
 ) -> None:
     if request.method not in UNSAFE_METHODS:
-        return
+        return None
 
     if credentials:
         return validate_basic_auth(credentials=credentials)

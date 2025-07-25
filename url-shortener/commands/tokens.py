@@ -63,5 +63,5 @@ def add_token(token: Annotated[str, typer.Argument(help="The token to add")]) ->
         db_redis_tokens.add_token(token)
         print("[green]Token added[/green]")
         return
-    else:
-        print("[red]Error[/red]")
+    # else:
+    print("[red]Error[/red]")
