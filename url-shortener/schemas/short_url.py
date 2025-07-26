@@ -25,7 +25,7 @@ class ShortUrl(BaseModel):
 
 class ShortUrlRead(BaseModel):
     target_url: AnyHttpUrl
-    description: ShortAnnotated_30_symbol = ""
+    description: ShortAnnotated_30_symbol
     slug: str
 
 
