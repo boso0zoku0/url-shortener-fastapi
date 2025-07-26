@@ -19,7 +19,7 @@ class FilmsCreate(FilmsBase):
 
 class Films(FilmsBase):
     notes: str = ""
-    slug: ShortAnnotated_slug
+    # slug: ShortAnnotated_slug
 
 
 class FilmsRead(FilmsCreate):
