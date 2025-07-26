@@ -13,7 +13,8 @@ class ShortUrlBase(BaseModel):
 
 
 class ShortUrlCreate(ShortUrlBase):
-    slug: ShortAnnotated_10_symbol
+    # slug: ShortAnnotated_10_symbol
+    pass
 
 
 class ShortUrl(BaseModel):

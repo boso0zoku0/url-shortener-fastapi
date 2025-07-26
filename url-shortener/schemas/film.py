@@ -14,7 +14,8 @@ class FilmsBase(BaseModel):
 
 
 class FilmsCreate(FilmsBase):
-    slug: ShortAnnotated_slug
+    pass
+    # slug: ShortAnnotated_slug
 
 
 class Films(FilmsBase):
