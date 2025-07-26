@@ -1,5 +1,9 @@
+from pydantic import ValidationError
+
 from schemas.film import FilmsCreate, Films, FilmsUpdate, FilmsUpdatePartial
 from unittest import TestCase
+
+from schemas.short_url import ShortUrlCreate
 
 
 class FilmsTestCase(TestCase):
@@ -59,7 +63,7 @@ class FilmsTestCase(TestCase):
         self.assertEqual(film.year_release, film_in.year_release)
 
 
-class FilmsSubTestTestCase(TestCase):
+class FilmsComplicatedTestCase(TestCase):
 
     def test_films_create_accepts_different_urls(self) -> None:
         urls = [
@@ -93,3 +97,30 @@ class FilmsSubTestTestCase(TestCase):
                     year_release=1999,
                 )
                 self.assertEqual(name, film_in.model_dump(mode="json")["name"])
+
+    def test_films_slug_too_long(self):
+
+        with self.assertRaises(ValidationError):
+            FilmsCreate(
+                name="test_film",
+                target_url="https://example.com",
+                description="This string contains more than thirty alphabetic characters.",
+                year_release=1999,
+            )
+
+    def test_films_create_slug_long_film_with_regex(self):
+
+        with self.assertRaisesRegex(
+            ValidationError,
+            expected_regex="String should have at most 50 characters",
+        ) as exc_info:
+            FilmsCreate(
+                name="test_film",
+                target_url="https://example.com",
+                description="This string contains more than thirty alphabetic characters.",
+                year_release=1999,
+            )
+
+        error_details = exc_info.exception.errors()[0]
+        expected_type = "string_too_long"
+        self.assertEqual(expected_type, error_details["type"])
