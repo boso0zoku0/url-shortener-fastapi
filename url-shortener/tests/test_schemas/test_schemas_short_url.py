@@ -50,3 +50,27 @@ class ShortUrlTestCase(TestCase):
         short_url = ShortUrlUpdatePartial(**short_url_in.model_dump())
         self.assertEqual(short_url_in.target_url, short_url.target_url)
         self.assertEqual(short_url_in.description, short_url.description)
+
+
+class ShortUrlsSubTestTestCase(TestCase):
+
+    def test_short_url_create_accepts_different_urls(self) -> None:
+        urls = [
+            "https://example.com",
+            "http://example.com",
+            # "rtmp://example.com",
+            # "rtmps://example.com",
+            "https://example",
+        ]
+
+        for url in urls:
+            with self.subTest(url=url, msg="added short url"):
+
+                short_url_in = ShortUrlCreate(
+                    target_url=url, description="another short url"
+                )
+
+                self.assertEqual(
+                    url.rstrip("/"),
+                    short_url_in.model_dump(mode="json")["target_url"].rstrip("/"),
+                )
