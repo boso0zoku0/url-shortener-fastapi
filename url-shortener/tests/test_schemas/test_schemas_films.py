@@ -3,7 +3,10 @@ from pydantic import ValidationError
 from schemas.film import FilmsCreate, Films, FilmsUpdate, FilmsUpdatePartial
 from unittest import TestCase
 
-from schemas.short_url import ShortUrlCreate
+from os import getenv
+
+if getenv("TESTING") != "1":  # type: ignore
+    raise EnvironmentError("Environment variable TESTING must be 1")
 
 
 class FilmsTestCase(TestCase):
