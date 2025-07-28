@@ -13,14 +13,14 @@ class ShortUrlBase(BaseModel):
 
 
 class ShortUrlCreate(ShortUrlBase):
-    # slug: ShortAnnotated_10_symbol
+    slug: ShortAnnotated_10_symbol
     pass
 
 
 class ShortUrl(BaseModel):
     target_url: AnyHttpUrl
     description: ShortAnnotated_30_symbol = ""
-    # slug: str
+    slug: str
     visits: int = 42
 
 

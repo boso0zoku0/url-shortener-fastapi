@@ -16,12 +16,12 @@ class FilmsBase(BaseModel):
 
 class FilmsCreate(FilmsBase):
     pass
-    # slug: ShortAnnotated_slug
+    slug: ShortAnnotated_slug
 
 
 class Films(FilmsBase):
     notes: str = ""
-    # slug: ShortAnnotated_slug
+    slug: ShortAnnotated_slug
 
 
 class FilmsRead(FilmsCreate):
