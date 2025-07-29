@@ -3,7 +3,7 @@ from typing import Annotated
 from annotated_types import Len, MaxLen
 from pydantic import AnyHttpUrl, BaseModel
 
-ShortAnnotated_10_symbol = Annotated[str, Len(min_length=3, max_length=20)]
+ShortAnnotated_10_symbol = Annotated[str, Len(min_length=3, max_length=30)]
 ShortAnnotated_30_symbol = Annotated[str, MaxLen(30)]
 
 
@@ -13,14 +13,14 @@ class ShortUrlBase(BaseModel):
 
 
 class ShortUrlCreate(ShortUrlBase):
-    slug: ShortAnnotated_10_symbol
+    slug: ShortAnnotated_10_symbol | None = None
     pass
 
 
 class ShortUrl(BaseModel):
     target_url: AnyHttpUrl
     description: ShortAnnotated_30_symbol = ""
-    slug: str
+    slug: str | None = None
     visits: int = 42
 
 

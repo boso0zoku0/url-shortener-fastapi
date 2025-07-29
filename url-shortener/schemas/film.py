@@ -4,7 +4,7 @@ from annotated_types import MaxLen
 from pydantic import BaseModel, AnyHttpUrl
 
 ShortAnnotated_description = Annotated[str, MaxLen(50)]
-ShortAnnotated_slug = Annotated[str, MaxLen(15)]
+ShortAnnotated_slug = Annotated[str, MaxLen(30)]
 
 
 class FilmsBase(BaseModel):
@@ -15,17 +15,17 @@ class FilmsBase(BaseModel):
 
 
 class FilmsCreate(FilmsBase):
-    pass
-    slug: ShortAnnotated_slug
+
+    slug: ShortAnnotated_slug | None = ""
 
 
 class Films(FilmsBase):
     notes: str = ""
-    slug: ShortAnnotated_slug
+    slug: ShortAnnotated_slug | None = ""
 
 
 class FilmsRead(FilmsCreate):
-    pass
+    slug: ShortAnnotated_slug | None = ""
 
 
 class FilmsUpdate(BaseModel):

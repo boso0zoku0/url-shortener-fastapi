@@ -103,4 +103,4 @@ class FilmsStorage(BaseModel):
         return film
 
 
-storage = FilmsStorage()
+storage: FilmsStorage = FilmsStorage()
