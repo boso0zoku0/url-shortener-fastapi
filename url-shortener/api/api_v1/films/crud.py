@@ -1,4 +1,4 @@
-__all__ = ("storage", "FilmsAlreadyExists")
+__all__ = ("storage", "FilmsAlreadyExistsError")
 
 import logging
 from typing import cast
@@ -29,7 +29,7 @@ class FilmsBaseError(Exception):
     pass
 
 
-class FilmsAlreadyExists(FilmsBaseError):
+class FilmsAlreadyExistsError(FilmsBaseError):
     pass
 
 
@@ -76,7 +76,7 @@ class FilmsStorage(BaseModel):
     def create_or_raise_if_exists(self, film: FilmsCreate) -> FilmsRead:
         if not self.exists(film.slug):
             return storage.create_film(film)
-        raise FilmsAlreadyExists(film.slug)
+        raise FilmsAlreadyExistsError(film.slug)
 
     @classmethod
     def delete_by_slug(cls, slug: str) -> None:
