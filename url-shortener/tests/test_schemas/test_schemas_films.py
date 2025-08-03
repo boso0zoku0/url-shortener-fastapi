@@ -1,12 +1,9 @@
+import string
+
 from pydantic import ValidationError
 
-from schemas.film import FilmsCreate, Films, FilmsUpdate, FilmsUpdatePartial
+from schemas.film import FilmsCreate, Films, FilmsUpdate, FilmsUpdatePartial, FilmsRead
 from unittest import TestCase
-
-from os import getenv
-
-if getenv("TESTING") != "1":  # type: ignore
-    raise EnvironmentError("Environment variable TESTING must be 1")
 
 
 class FilmsTestCase(TestCase):
@@ -127,3 +124,20 @@ class FilmsComplicatedTestCase(TestCase):
         error_details = exc_info.exception.errors()[0]
         expected_type = "string_too_long"
         self.assertEqual(expected_type, error_details["type"])
+
+    def test_films_error(self):
+        data_film_read = FilmsRead(
+            name="dwqwd",
+            slug="dwqwd",
+            target_url="https://example.com",
+            description="Is new film",
+            year_release=1999,
+        )
+        with self.assertRaisesRegex(
+            AssertionError,
+            expected_regex="'dwqwd' != 'dwqwdabcdefghijklmnopqrstuvwxyz'",
+        ):
+            data_films = Films(**data_film_read.model_dump())
+            expected_film = data_films.name
+            result = data_film_read.name + "".join(string.ascii_lowercase)
+            self.assertEqual(expected_film, result)

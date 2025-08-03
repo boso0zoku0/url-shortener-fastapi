@@ -1,3 +1,4 @@
+import pytest
 from pydantic import ValidationError
 from os import getenv
 from schemas.short_url import (
@@ -7,9 +8,6 @@ from schemas.short_url import (
     ShortUrlUpdatePartial,
 )
 from unittest import TestCase
-
-if getenv("TESTING") != "1":
-    raise EnvironmentError("Environment variable TESTING must be 1")
 
 
 class ShortUrlTestCase(TestCase):
