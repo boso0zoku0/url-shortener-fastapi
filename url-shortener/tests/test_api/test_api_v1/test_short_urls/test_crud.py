@@ -1,4 +1,5 @@
 import string
+from collections.abc import Generator
 from random import choices
 from typing import ClassVar, List
 from unittest import TestCase
@@ -25,8 +26,10 @@ def create_short_url() -> ShortUrl:
 
 
 @pytest.fixture
-def short_url() -> ShortUrl:
-    return create_short_url()
+def short_url() -> Generator[ShortUrl]:
+    short_url = create_short_url()
+    yield short_url
+    storage.delete(short_url)
 
 
 class ShortUrlUpdateTestCase(TestCase):
@@ -82,7 +85,7 @@ class ShortUrlStorageGetTestCase(TestCase):
         short_urls = storage.get()
         expected_slugs = {su.slug for su in self.short_urls}
         slugs = {su.slug for su in short_urls}
-        expected_diff = set()
+        expected_diff: set[str] = set()
         diff = expected_diff - slugs
         self.assertEqual(expected_diff, diff)
 

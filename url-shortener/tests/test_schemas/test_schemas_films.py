@@ -98,7 +98,7 @@ class FilmsComplicatedTestCase(TestCase):
                 )
                 self.assertEqual(name, film_in.model_dump(mode="json")["name"])
 
-    def test_films_slug_too_long(self):
+    def test_films_slug_too_long(self) -> None:
 
         with self.assertRaises(ValidationError):
             FilmsCreate(
@@ -108,7 +108,7 @@ class FilmsComplicatedTestCase(TestCase):
                 year_release=1999,
             )
 
-    def test_films_create_slug_long_film_with_regex(self):
+    def test_films_create_slug_long_film_with_regex(self) -> None:
 
         with self.assertRaisesRegex(
             ValidationError,
@@ -125,7 +125,7 @@ class FilmsComplicatedTestCase(TestCase):
         expected_type = "string_too_long"
         self.assertEqual(expected_type, error_details["type"])
 
-    def test_films_error(self):
+    def test_films_error(self) -> None:
         data_film_read = FilmsRead(
             name="dwqwd",
             slug="dwqwd",

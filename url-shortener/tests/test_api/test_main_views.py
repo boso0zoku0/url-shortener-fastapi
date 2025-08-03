@@ -6,7 +6,7 @@ from fastapi import status
 client = TestClient(app)
 
 
-def test_main_views():
+def test_main_views() -> None:
     name = "Bob"
     query = {"name": name}
     response = client.get("/", params=query)
@@ -17,7 +17,7 @@ def test_main_views():
 
 
 @pytest.mark.parametrize("name", ["John", "!@#$%&", "John Snow", ""])
-def test_main_custom_views(name: str):
+def test_main_custom_views(name: str) -> None:
     query = {"name": name}
     response = client.get("/", params=query)
     assert response.status_code == status.HTTP_200_OK, response.text

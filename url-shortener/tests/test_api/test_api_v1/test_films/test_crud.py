@@ -1,8 +1,7 @@
 import string
-
-# from random import choices
 import random
-from typing import ClassVar
+from collections.abc import Generator
+from typing import ClassVar, Any, cast
 from unittest import TestCase
 
 import pytest
@@ -28,8 +27,10 @@ def creation_film() -> FilmsRead:
 
 
 @pytest.fixture
-def film() -> FilmsRead:
-    return creation_film()
+def film() -> Generator[FilmsRead]:
+    film = creation_film()
+    yield film
+    storage.delete(film)
 
 
 class FilmsUpdateTestCase(TestCase):
@@ -66,7 +67,7 @@ class FilmsStorageGetTestCase(TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        cls.film = [creation_film() for _ in range(cls.FILMS_COUNT)]
+        cls.films = [creation_film() for _ in range(cls.FILMS_COUNT)]
 
     @classmethod
     def tearDownClass(cls) -> None:
@@ -76,7 +77,7 @@ class FilmsStorageGetTestCase(TestCase):
     def test_get_list(self) -> None:
         storage_get = storage.get_films()
         storage_class_get = self.films
-        expected_slugs = {su.slug for su in self.film}
+        expected_slugs = {su.slug for su in self.films}
         slugs = {su.slug for su in storage_get}
 
         diff = expected_slugs - slugs
