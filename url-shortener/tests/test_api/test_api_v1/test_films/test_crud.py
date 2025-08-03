@@ -4,13 +4,11 @@ import string
 import random
 from typing import ClassVar
 from unittest import TestCase
+
+import pytest
+
 from schemas.film import Films, FilmsCreate, FilmsUpdate, FilmsUpdatePartial, FilmsRead
-from api.api_v1.films.crud import storage
-from os import getenv
-
-
-if getenv("TESTING") != "1":
-    raise EnvironmentError("Environment variable TESTING must be 1")
+from api.api_v1.films.crud import storage, FilmsAlreadyExistsError
 
 
 def creation_film() -> FilmsRead:
@@ -27,6 +25,11 @@ def creation_film() -> FilmsRead:
         year_release=1999,
     )
     return storage.create_film(film_in)
+
+
+@pytest.fixture
+def film() -> FilmsRead:
+    return creation_film()
 
 
 class FilmsUpdateTestCase(TestCase):
@@ -86,3 +89,10 @@ class FilmsStorageGetTestCase(TestCase):
                 db_get = storage.get_by_slug(film.slug)
 
                 self.assertEqual(film.slug, db_get.slug)
+
+
+def test_create_or_raise_if_exist(film: FilmsRead) -> None:
+    film_create = FilmsCreate(**film.model_dump())
+    with pytest.raises(FilmsAlreadyExistsError, match=film_create.slug) as exc_info:
+        storage.create_or_raise_if_exists(film_create)
+    assert exc_info.value.args[0] == film_create.slug

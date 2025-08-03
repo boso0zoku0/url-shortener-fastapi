@@ -3,18 +3,15 @@ from random import choices
 from typing import ClassVar, List
 from unittest import TestCase
 
-from os import getenv
+import pytest
 
-from api.api_v1.short_urls.crud import storage
+from api.api_v1.short_urls.crud import storage, ShortUrlAlreadyExists
 from schemas.short_url import (
     ShortUrl,
     ShortUrlCreate,
     ShortUrlUpdate,
     ShortUrlUpdatePartial,
 )
-
-if getenv("TESTING") != "1":
-    raise EnvironmentError("Environment variable TESTING must be 1")
 
 
 def create_short_url() -> ShortUrl:
@@ -25,6 +22,11 @@ def create_short_url() -> ShortUrl:
     )
 
     return storage.create(short_url)
+
+
+@pytest.fixture
+def short_url() -> ShortUrl:
+    return create_short_url()
 
 
 class ShortUrlUpdateTestCase(TestCase):
@@ -92,3 +94,11 @@ class ShortUrlStorageGetTestCase(TestCase):
 
                 db_short_url = storage.get_by_slug(short_url.slug)
                 self.assertEqual(short_url.slug, db_short_url.slug)
+
+
+def test_create_or_raise_if_exist(short_url: ShortUrl) -> None:
+    short_url_create = ShortUrlCreate(**short_url.model_dump())
+    with pytest.raises(ShortUrlAlreadyExists, match=short_url_create.slug) as exc_info:
+        storage.create_or_raise_if_exists(short_url_create)
+    assert exc_info.value.args[0] == short_url_create.slug
+    print(exc_info)
