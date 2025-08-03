@@ -3,7 +3,7 @@ import logging
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from api.api_v1.dependencies import api_token_or_basic_auth_for_unsafe_methods
-from api.api_v1.films.crud import FilmsAlreadyExists, storage
+from api.api_v1.films.crud import FilmsAlreadyExistsError, storage
 from schemas.film import FilmsCreate, FilmsRead
 
 log = logging.getLogger(__name__)
@@ -53,7 +53,7 @@ def show_films() -> list[FilmsRead]:
 def create_film(film_create: FilmsCreate) -> FilmsRead | None:
     try:
         return storage.create_or_raise_if_exists(film_create)
-    except FilmsAlreadyExists:
+    except FilmsAlreadyExistsError:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail=f"Film with slug={film_create.slug} already exists",
