@@ -10,7 +10,7 @@ from schemas.film import Films, FilmsCreate, FilmsUpdate, FilmsUpdatePartial, Fi
 from api.api_v1.films.crud import storage, FilmsAlreadyExistsError
 
 
-def creation_film() -> FilmsRead:
+def creation_film() -> Films:
     film_in = FilmsCreate(
         name="dwq",
         slug="".join(
@@ -72,7 +72,7 @@ class FilmsStorageGetTestCase(TestCase):
     @classmethod
     def tearDownClass(cls) -> None:
         for film in cls.films:
-            storage.delete_films(film)
+            storage.delete(film)
 
     def test_get_list(self) -> None:
         storage_get = storage.get_films()

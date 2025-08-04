@@ -2,7 +2,7 @@ import pytest
 from fastapi.testclient import TestClient
 from fastapi import status
 
-from tests.test_api.conftest import client
+# from tests.test_api.conftest import client
 
 
 def test_main_views(client: TestClient) -> None:
