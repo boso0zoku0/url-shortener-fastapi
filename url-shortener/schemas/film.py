@@ -31,7 +31,7 @@ class FilmsRead(FilmsCreate):
 class FilmsUpdate(BaseModel):
     name: str
     target_url: AnyHttpUrl
-    description: ShortAnnotated_description | ""
+    description: ShortAnnotated_description | None = ""
     year_release: int
 
 
