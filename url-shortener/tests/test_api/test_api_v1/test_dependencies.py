@@ -31,5 +31,5 @@ class TestUnsafeMethods(TestCase):
         }
         assert not UNSAFE_METHODS & safe_methods
 
-    def test_uppercase_unsafe_metgods(self) -> None:
+    def test_uppercase_unsafe_methods(self) -> None:
         assert all(method.isupper() for method in UNSAFE_METHODS)
