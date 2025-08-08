@@ -32,11 +32,6 @@ router = APIRouter(
 )
 
 
-# @router.post("/add-token")
-# def generate_and_save_token(token: str):
-#     return db_redis_tokens.generate_and_save_token(token)
-#
-
 
 @router.get("/read-urls", response_model=list[ShortUrl])
 def read_short_urls_list() -> list[ShortUrlRead]:
@@ -66,7 +61,7 @@ def create_short_url(short_url_in: ShortUrlCreate) -> ShortUrl:
     except ShortUrlAlreadyExists:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail=f"Short URL {short_url_in.slug} already exists",
+            detail=f"Short URL with slug = {short_url_in.slug} already exists",
         )
 
 
