@@ -1,0 +1,40 @@
+"""
+функция создание шорт урла по в параметрах слаг который пркоинуть дальше
+
+ффикстура которая возвраащет эту функцию
+
+
+"""
+from typing import Generator
+
+import pytest
+from _pytest.fixtures import SubRequest
+from fastapi import status
+from starlette.testclient import TestClient
+
+from api.api_v1.short_urls.crud import storage
+from schemas.short_url import ShortUrl, ShortUrlCreate
+from main import app
+
+def create_short_url(slug: str) -> ShortUrl:
+    short_url = ShortUrlCreate(
+        target_url="https://example.com",
+        description="A short url",
+        slug=slug,
+    )
+    return storage.create(short_url)
+
+    
+@pytest.fixture(params=[
+    pytest.param("abc", id="min slug"),
+    pytest.param("abcqweasdw", id="max slug"),
+])
+def short_url(request: SubRequest) -> ShortUrl:
+    return create_short_url(request.param)
+
+
+def test_short_url_delete(auth_client: TestClient, short_url: ShortUrl) -> None:
+    url = app.url_path_for("delete_slug", slug=short_url.slug)
+    response = auth_client.delete(url=url)
+    assert response.status_code == status.HTTP_204_NO_CONTENT, response.text
+    assert not storage.exists(short_url.slug)
