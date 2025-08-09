@@ -14,9 +14,7 @@ from fastapi.security import (
 
 from api.api_v1.auth.services.redis_tokens_helper import db_redis_tokens
 from api.api_v1.auth.services.redis_users_helper import db_redis_users
-from api.api_v1.films.crud import storage as film_storage
 from api.api_v1.short_urls.crud import storage
-from schemas.film import FilmsRead
 from schemas.short_url import ShortUrl
 
 log = logging.getLogger(__name__)
@@ -52,22 +50,6 @@ def prefetch_url(slug: str) -> ShortUrl | None:
         status_code=status.HTTP_404_NOT_FOUND, detail=f"URL {slug!r} not found"
     )
 
-
-def prefetch_url_film(slug: str) -> FilmsRead | None:
-    url: FilmsRead | None = film_storage.get_by_slug(slug=slug)
-    if url:
-        return url
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND, detail=f"Film {slug!r} not found"
-    )
-
-
-def get_film_by_slug_exc(
-    slug: FilmsRead | None = Depends(film_storage.get_by_slug),
-) -> FilmsRead | None:
-    if not slug:
-        raise HTTPException(status_code=404, detail=f"Slug by Film: {slug} not found")
-    return slug
 
 
 def validate_api_token(api_token: HTTPAuthorizationCredentials) -> None:
