@@ -1,8 +1,14 @@
+import random
 import string
-from random import choices
+# from random import choices
+from typing import Any
 
+import pytest
+from _pytest.fixtures import SubRequest
 from fastapi.testclient import TestClient
 from fastapi import status
+
+from api.api_v1.short_urls.crud import storage
 from tests.test_api.conftest import short_url
 from main import app
 from schemas.short_url import ShortUrlCreate, ShortUrl
@@ -13,7 +19,7 @@ def test_create_short_url(client: TestClient) -> None:
     data = ShortUrlCreate(
         target_url="https://example.com",
         description="A short url",
-        slug="".join(choices(string.ascii_letters, k=8))).model_dump(mode="json")
+        slug="".join(random.choices(string.ascii_letters, k=8))).model_dump(mode="json")
     response = client.post(url=url, json=data)
     response_data = response.json()
     received_data = {
@@ -33,3 +39,50 @@ def test_short_url_already_exists(auth_client: TestClient, short_url: ShortUrl) 
     response_json = response.json()
     expected_error = f"Short URL with slug = {short_url.slug} already exists"
     assert response_json["detail"] == expected_error
+
+
+def build_short_url_create(slug: str) -> ShortUrlCreate:
+    return ShortUrlCreate(
+        target_url="https://example.com",
+        description="A short url",
+        slug=slug,
+    )
+def build_short_url_create_random_slug() -> ShortUrlCreate:
+    return build_short_url_create(slug=''.join(random.choices(string.ascii_letters, k=8)))
+
+def create_short_url_not_exists(slug: str) -> ShortUrlCreate:
+    short_url = build_short_url_create(slug)
+    return storage.create_or_raise_if_exists(short_url)
+
+
+def create_short_url_random_slug() -> ShortUrlCreate:
+    short_url = build_short_url_create_random_slug()
+    return storage.create_or_raise_if_exists(short_url)
+
+
+
+
+class TestCreateInvalid:
+    @pytest.fixture(params=[
+            pytest.param(("a", "string_too_short"), id="too-short"),
+            pytest.param(("foo-bar-spam-eggs", "string_too_long"), id="too-long"),
+        ],
+    )
+    
+    def short_url_values(self, request: SubRequest) -> tuple[dict[str, Any], str]:
+        build = build_short_url_create_random_slug()
+        build_json = build.model_dump(mode="json")
+        slug, error = request.param
+        build_json["slug"] = slug
+        return build_json, error
+    
+    def test_invalid_slug(
+        self,
+        short_url_values: tuple[dict[str, Any], str],
+        auth_client: TestClient) -> None:
+        url = app.url_path_for("create_short_url")
+        create, error = short_url_values
+        response = auth_client.post(url=url, json=create)
+        assert (response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY), response.text
+        error_detail = response.json()["detail"][0]
+        assert error_detail["type"] == error, error_detail
