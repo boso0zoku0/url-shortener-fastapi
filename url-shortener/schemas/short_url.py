@@ -3,7 +3,7 @@ from typing import Annotated
 from annotated_types import Len, MaxLen
 from pydantic import AnyHttpUrl, BaseModel
 
-ShortAnnotated_10_symbol = Annotated[str, Len(min_length=3, max_length=30)]
+ShortAnnotated_10_symbol = Annotated[str, Len(min_length=3, max_length=8)]
 ShortAnnotated_30_symbol = Annotated[str, MaxLen(30)]
 
 
