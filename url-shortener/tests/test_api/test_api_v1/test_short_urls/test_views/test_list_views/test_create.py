@@ -8,8 +8,7 @@ from _pytest.fixtures import SubRequest
 from fastapi.testclient import TestClient
 from fastapi import status
 
-from api.api_v1.short_urls.crud import storage
-from tests.test_api.conftest import short_url
+from tests.test_api.conftest import short_url, build_short_url_create_random_slug
 from main import app
 from schemas.short_url import ShortUrlCreate, ShortUrl
 
@@ -39,27 +38,6 @@ def test_short_url_already_exists(auth_client: TestClient, short_url: ShortUrl) 
     response_json = response.json()
     expected_error = f"Short URL with slug = {short_url.slug} already exists"
     assert response_json["detail"] == expected_error
-
-
-def build_short_url_create(slug: str) -> ShortUrlCreate:
-    return ShortUrlCreate(
-        target_url="https://example.com",
-        description="A short url",
-        slug=slug,
-    )
-def build_short_url_create_random_slug() -> ShortUrlCreate:
-    return build_short_url_create(slug=''.join(random.choices(string.ascii_letters, k=8)))
-
-def create_short_url_not_exists(slug: str) -> ShortUrlCreate:
-    short_url = build_short_url_create(slug)
-    return storage.create_or_raise_if_exists(short_url)
-
-
-def create_short_url_random_slug() -> ShortUrlCreate:
-    short_url = build_short_url_create_random_slug()
-    return storage.create_or_raise_if_exists(short_url)
-
-
 
 
 class TestCreateInvalid:
