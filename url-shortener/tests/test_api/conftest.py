@@ -1,15 +1,16 @@
-
+import random
+import string
 from typing import Generator
 
 import pytest
 from _pytest.fixtures import SubRequest
 from fastapi.testclient import TestClient
+from pydantic import AnyHttpUrl
 
 from api.api_v1.auth.services import db_redis_tokens
 from api.api_v1.short_urls.crud import storage
 from main import app
 from schemas.short_url import ShortUrl, ShortUrlCreate
-
 
 @pytest.fixture()
 def client() -> Generator[TestClient]:
@@ -45,3 +46,24 @@ def short_url() -> Generator[ShortUrl]:
     storage.delete(short_url)
 
 
+def build_short_url_create(slug: str, target_url: str | AnyHttpUrl = "https://www.example.com/", description: str = "A short url") -> ShortUrlCreate:
+    return ShortUrlCreate(
+        target_url=target_url,
+        description=description,
+        slug=slug,
+    )
+
+
+def build_short_url_create_random_slug(description: str, target_url: str | AnyHttpUrl = "https://www.example.com/") -> ShortUrlCreate:
+    return build_short_url_create(slug=''.join(random.choices(string.ascii_letters, k=8)), description=description,
+                                  target_url=target_url)
+
+
+def create_short_url_not_exists(description: str, slug: str, target_url: str | AnyHttpUrl = "https://www.example.com/") -> ShortUrlCreate:
+    short_url = build_short_url_create(slug, description=description, target_url=target_url)
+    return storage.create(short_url)
+
+
+def create_short_url_random_slug(description: str, target_url: str | AnyHttpUrl = "https://www.example.com/") -> ShortUrlCreate:
+    short_url = build_short_url_create_random_slug(description=description, target_url=target_url)
+    return storage.create_or_raise_if_exists(short_url)
