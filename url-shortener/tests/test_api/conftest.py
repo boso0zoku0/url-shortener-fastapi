@@ -54,16 +54,16 @@ def build_short_url_create(slug: str, target_url: str | AnyHttpUrl = "https://ww
     )
 
 
-def build_short_url_create_random_slug(description: str, target_url: str | AnyHttpUrl = "https://www.example.com/") -> ShortUrlCreate:
+def build_short_url_create_random_slug(description: str = "It's desc", target_url: str | AnyHttpUrl = "https://www.example.com/") -> ShortUrlCreate:
     return build_short_url_create(slug=''.join(random.choices(string.ascii_letters, k=8)), description=description,
                                   target_url=target_url)
 
 
-def create_short_url_not_exists(description: str, slug: str, target_url: str | AnyHttpUrl = "https://www.example.com/") -> ShortUrlCreate:
+def create_short_url_not_exists(slug: str, target_url: str | AnyHttpUrl = "https://www.example.com/", description: str = "It's desc") -> ShortUrlCreate:
     short_url = build_short_url_create(slug, description=description, target_url=target_url)
     return storage.create(short_url)
 
 
-def create_short_url_random_slug(description: str, target_url: str | AnyHttpUrl = "https://www.example.com/") -> ShortUrlCreate:
+def create_short_url_random_slug(target_url: str | AnyHttpUrl = "https://www.example.com/", description: str = "It's desc") -> ShortUrlCreate:
     short_url = build_short_url_create_random_slug(description=description, target_url=target_url)
     return storage.create_or_raise_if_exists(short_url)
