@@ -5,7 +5,11 @@ from typing import ClassVar, List
 from unittest import TestCase
 
 import pytest
+from _pytest.fixtures import SubRequest
+from fastapi.testclient import TestClient
+from starlette import status
 
+from main import app
 from api.api_v1.short_urls.crud import storage, ShortUrlAlreadyExists
 from schemas.short_url import (
     ShortUrl,
@@ -83,7 +87,6 @@ class ShortUrlStorageGetTestCase(TestCase):
 
     def test_get_list(self) -> None:
         short_urls = storage.get()
-        expected_slugs = {su.slug for su in self.short_urls}
         slugs = {su.slug for su in short_urls}
         expected_diff: set[str] = set()
         diff = expected_diff - slugs
@@ -105,3 +108,4 @@ def test_create_or_raise_if_exist(short_url: ShortUrl) -> None:
         storage.create_or_raise_if_exists(short_url_create)
     assert exc_info.value.args[0] == short_url_create.slug
     print(exc_info)
+
