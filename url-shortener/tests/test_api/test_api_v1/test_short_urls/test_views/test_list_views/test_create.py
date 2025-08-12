@@ -1,5 +1,6 @@
 import random
 import string
+
 # from random import choices
 from typing import Any
 
@@ -12,13 +13,16 @@ from tests.test_api.conftest import short_url, build_short_url_create_random_slu
 from main import app
 from schemas.short_url import ShortUrlCreate, ShortUrl
 
+pytestmark = pytest.mark.apitest
+
 
 def test_create_short_url(client: TestClient) -> None:
     url = app.url_path_for("create_short_url")
     data = ShortUrlCreate(
         target_url="https://example.com",
         description="A short url",
-        slug="".join(random.choices(string.ascii_letters, k=8))).model_dump(mode="json")
+        slug="".join(random.choices(string.ascii_letters, k=8)),
+    ).model_dump(mode="json")
     response = client.post(url=url, json=data)
     response_data = response.json()
     received_data = {
@@ -41,26 +45,27 @@ def test_short_url_already_exists(auth_client: TestClient, short_url: ShortUrl) 
 
 
 class TestCreateInvalid:
-    @pytest.fixture(params=[
+    @pytest.fixture(
+        params=[
             pytest.param(("a", "string_too_short"), id="too-short"),
             pytest.param(("foo-bar-spam-eggs", "string_too_long"), id="too-long"),
         ],
     )
-    
     def short_url_values(self, request: SubRequest) -> tuple[dict[str, Any], str]:
         build = build_short_url_create_random_slug()
         build_json = build.model_dump(mode="json")
         slug, error = request.param
         build_json["slug"] = slug
         return build_json, error
-    
+
     def test_invalid_slug(
-        self,
-        short_url_values: tuple[dict[str, Any], str],
-        auth_client: TestClient) -> None:
+        self, short_url_values: tuple[dict[str, Any], str], auth_client: TestClient
+    ) -> None:
         url = app.url_path_for("create_short_url")
         create, error = short_url_values
         response = auth_client.post(url=url, json=create)
-        assert (response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY), response.text
+        assert (
+            response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+        ), response.text
         error_detail = response.json()["detail"][0]
         assert error_detail["type"] == error, error_detail

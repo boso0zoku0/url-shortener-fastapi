@@ -5,6 +5,7 @@
 
 
 """
+
 from typing import Generator
 
 import pytest
@@ -16,6 +17,9 @@ from api.api_v1.short_urls.crud import storage
 from schemas.short_url import ShortUrl, ShortUrlCreate
 from main import app
 
+pytestmark = pytest.mark.apitest
+
+
 def create_short_url(slug: str) -> ShortUrl:
     short_url = ShortUrlCreate(
         target_url="https://example.com",
@@ -24,11 +28,13 @@ def create_short_url(slug: str) -> ShortUrl:
     )
     return storage.create(short_url)
 
-    
-@pytest.fixture(params=[
-    pytest.param("abc", id="min slug"),
-    pytest.param("qweas", id="max slug"),
-])
+
+@pytest.fixture(
+    params=[
+        pytest.param("abc", id="min slug"),
+        pytest.param("qweas", id="max slug"),
+    ]
+)
 def short_url(request: SubRequest) -> ShortUrl:
     return create_short_url(request.param)
 

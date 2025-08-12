@@ -18,6 +18,8 @@ from schemas.short_url import (
     ShortUrlUpdatePartial,
 )
 
+pytestmark = pytest.mark.apitest
+
 
 def create_short_url() -> ShortUrl:
     short_url = ShortUrlCreate(
@@ -27,13 +29,6 @@ def create_short_url() -> ShortUrl:
     )
 
     return storage.create(short_url)
-
-
-@pytest.fixture
-def short_url() -> Generator[ShortUrl]:
-    short_url = create_short_url()
-    yield short_url
-    storage.delete(short_url)
 
 
 class ShortUrlUpdateTestCase(TestCase):
@@ -108,4 +103,3 @@ def test_create_or_raise_if_exist(short_url: ShortUrl) -> None:
         storage.create_or_raise_if_exists(short_url_create)
     assert exc_info.value.args[0] == short_url_create.slug
     print(exc_info)
-
