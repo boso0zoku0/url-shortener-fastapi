@@ -1,6 +1,6 @@
 [run]
 branch = on
-command_line = -m unittest
+command_line = -m pytest
 ;disable_test_id_escaping_and_forfeit_all_rights_to_community_support = True
 omit =
     # omit stuff.py
