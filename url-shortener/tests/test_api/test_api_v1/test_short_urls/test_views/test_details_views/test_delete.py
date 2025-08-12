@@ -27,7 +27,7 @@ def create_short_url(slug: str) -> ShortUrl:
     
 @pytest.fixture(params=[
     pytest.param("abc", id="min slug"),
-    pytest.param("abcqweasdw", id="max slug"),
+    pytest.param("qweas", id="max slug"),
 ])
 def short_url(request: SubRequest) -> ShortUrl:
     return create_short_url(request.param)
