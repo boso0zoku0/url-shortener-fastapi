@@ -23,9 +23,15 @@ dev = [
 
 [tool.pytest.ini_options]
 minversion = "8.3"
-addopts = "-ra"
+addopts = "-ra --strict-markers"
 log_cli = false
 log_cli_level = "INFO"
+xfail_strict = true
+
+markers = [
+    "apitest: test any http api call",
+]
+
 
 
 # mypy settings
@@ -34,7 +40,6 @@ log_cli_level = "INFO"
 strict = true
 
 plugins = ["pydantic.mypy"]
-
 
 
 
