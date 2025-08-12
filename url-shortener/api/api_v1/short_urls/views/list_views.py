@@ -32,7 +32,6 @@ router = APIRouter(
 )
 
 
-
 @router.get("/read-urls", response_model=list[ShortUrl])
 def read_short_urls_list() -> list[ShortUrlRead]:
     return storage.get()
@@ -73,3 +72,9 @@ def search_url(slug: str) -> ShortUrl | None:
 @router.post("/add-token", status_code=status.HTTP_201_CREATED)
 def add_token(token: str) -> None:
     return db_redis_tokens.add_token(token)
+
+
+@router.post("/transfer")
+def transfer_short_url() -> dict[str, str]:
+    return {"hello": "world"}
+    # raise ValueError
