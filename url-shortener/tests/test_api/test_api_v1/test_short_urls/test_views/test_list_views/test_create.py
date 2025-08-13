@@ -1,3 +1,4 @@
+import logging
 import random
 import string
 
@@ -16,21 +17,28 @@ from schemas.short_url import ShortUrlCreate, ShortUrl
 pytestmark = pytest.mark.apitest
 
 
-def test_create_short_url(client: TestClient) -> None:
+def test_create_short_url(
+    caplog: pytest.LogCaptureFixture, auth_client: TestClient
+) -> None:
+    caplog.set_level(logging.INFO)
     url = app.url_path_for("create_short_url")
-    data = ShortUrlCreate(
+    short_url = ShortUrlCreate(
         target_url="https://example.com",
         description="A short url",
         slug="".join(random.choices(string.ascii_letters, k=8)),
-    ).model_dump(mode="json")
-    response = client.post(url=url, json=data)
+    )
+    data: dict[str, str] = short_url.model_dump(mode="json")
+    response = auth_client.post(url=url, json=data)
     response_data = response.json()
     received_data = {
         "target_url": data["target_url"],
         "description": data["description"],
         "slug": data["slug"],
     }
-    assert data == received_data, f"Response JSON: {response.json()}"
+    assert response_data == received_data, f"Response JSON: {response.json()}"
+    assert "Created short url" in caplog.text
+    assert response_data["slug"] in caplog.text
+    assert short_url.slug in caplog.text
 
 
 def test_short_url_already_exists(auth_client: TestClient, short_url: ShortUrl) -> None:
