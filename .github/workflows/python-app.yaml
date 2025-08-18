@@ -6,11 +6,11 @@ jobs:
   hello-job:
     runs-on: ubuntu-latest
     steps:
-      - name: My first step in GH Action
+      - name: My first step in GitHub Action
         run: echo "Hello Action on ${{ github.event_name }}"
 
-      - name: My first step in GH Action
+      - name: My first step in GitHub Action
         run: echo "Hello Action in ${{ github.repository }} ref - ${{ github.ref }}"
 
-      - name: This GH Action is running on ${{ runner.os }}
+      - name: This GitHub Action is running on ${{ runner.os }}
         run: echo "Action job status ${{ job.status }}"
