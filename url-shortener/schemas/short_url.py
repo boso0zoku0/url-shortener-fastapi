@@ -7,6 +7,7 @@ ShortAnnotated_10_symbol = Annotated[str, Len(min_length=3, max_length=8)]
 ShortAnnotated_30_symbol = Annotated[str, MaxLen(30), MinLen(0)]
 DESCRIPTION_MAX_LENGTH = 30
 
+
 class ShortUrlBase(BaseModel):
     target_url: AnyHttpUrl
     description: ShortAnnotated_30_symbol = ""

@@ -7,4 +7,3 @@ import pytest
 def checking_env():
     if getenv("TESTING") != "1":
         pytest.exit("This test must be run in test mode")
-        

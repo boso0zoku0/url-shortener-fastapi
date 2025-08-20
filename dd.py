@@ -38,6 +38,6 @@ import pprint
 # print("Previous umask:", umask)
 
 
-dd, aa = (1,2)
+dd, aa = (1, 2)
 
 print(dd)

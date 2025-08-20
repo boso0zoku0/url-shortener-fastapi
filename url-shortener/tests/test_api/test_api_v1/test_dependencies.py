@@ -1,4 +1,3 @@
-
 from unittest import TestCase
 from api.api_v1.dependencies import prefetch_url, UNSAFE_METHODS
 from api.api_v1.short_urls.crud import storage

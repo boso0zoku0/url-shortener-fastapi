@@ -7,7 +7,6 @@ __all__ = (
 )
 
 
-
 from schemas.short_url import (
     ShortUrlBase,
     ShortUrlCreate,
