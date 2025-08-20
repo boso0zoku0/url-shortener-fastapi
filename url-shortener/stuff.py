@@ -46,23 +46,3 @@ print(
         age=21313213213,
     ).model_dump(mode="json")
 )
-
-
-# @pytest.fixture(scope="function")
-# def x(request):
-#     return request.param * 3
-#
-# @pytest.fixture(scope="function")
-# def y(request):
-#     return request.param * 2
-#
-# @pytest.mark.parametrize(
-#     "x, y",
-#     [("a", "b"), ("c", "d")],
-#     indirect=True
-# )
-# def test_indirect(x, y):
-#     assert x = 'aaa'
-#
-# if __name__ == "__main__":
-#     main()
