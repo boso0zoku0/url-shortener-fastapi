@@ -12,8 +12,6 @@ from api.api_v1.short_urls.crud import storage
 from main import app
 from schemas.short_url import ShortUrl, ShortUrlCreate
 
-print("hi")
-
 
 @pytest.fixture()
 def client() -> Generator[TestClient]:
