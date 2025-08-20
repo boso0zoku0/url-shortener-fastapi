@@ -9,6 +9,7 @@ on:
       - main
     paths:
       - "url-shortener/**"
+      - ".github/workflows/**"
 
 jobs:
   run-black:
