@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: My first step in GitHub Action
-        run: echo "Hello Action on ${{ github.event_name }}"
+        run: echo "Hello Action on ${{ github.event }}"
 
       - name: My first step in GitHub Action
         run: echo "Hello Action in ${{ github.repository }} ref - ${{ github.ref }}"
