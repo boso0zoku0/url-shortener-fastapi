@@ -1,5 +1,4 @@
 import string
-from collections.abc import Generator
 from random import choices
 from typing import ClassVar, List
 from unittest import TestCase
@@ -9,7 +8,6 @@ from _pytest.fixtures import SubRequest
 from fastapi.testclient import TestClient
 from starlette import status
 
-from main import app
 from api.api_v1.short_urls.crud import storage, ShortUrlAlreadyExists
 from schemas.short_url import (
     ShortUrl,
