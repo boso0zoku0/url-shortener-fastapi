@@ -51,7 +51,6 @@ def prefetch_url(slug: str) -> ShortUrl | None:
     )
 
 
-
 def validate_api_token(api_token: HTTPAuthorizationCredentials) -> None:
     if db_redis_tokens.token_exists(token=api_token.credentials):
         return

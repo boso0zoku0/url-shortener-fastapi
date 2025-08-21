@@ -36,3 +36,8 @@ import pprint
 #
 # print("Current umask:", mask)
 # print("Previous umask:", umask)
+
+
+dd, aa = (1, 2)
+
+print(dd)

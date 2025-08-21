@@ -6,8 +6,9 @@
 
 """
 
+import sys
 from typing import Generator
-
+import logging
 import pytest
 from _pytest.fixtures import SubRequest
 from fastapi import status
@@ -44,3 +45,18 @@ def test_short_url_delete(auth_client: TestClient, short_url: ShortUrl) -> None:
     response = auth_client.delete(url=url)
     assert response.status_code == status.HTTP_204_NO_CONTENT, response.text
     assert not storage.exists(short_url.slug)
+
+
+def test_disabling_capturing(capsys):
+    print("this output is captured")
+    with capsys.disabled():
+        print("output not captured, going directly to sys.stdout")
+    print("this output is also captured")
+
+
+# def test_output_capture(capfd):
+#     print("Это stdout")
+#     print("Это stderr", file=sys.stderr)
+#     out, err = capfd.readouterr()
+#     assert "stdout" in out
+#     assert "stderr" in err

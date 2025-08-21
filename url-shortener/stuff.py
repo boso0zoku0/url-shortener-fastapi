@@ -1,6 +1,8 @@
+from pydantic import BaseModel
 from redis import Redis
 
 from core import config
+import os
 
 redis = Redis(
     host=config.REDIS_HOST,
@@ -26,5 +28,21 @@ def main() -> None:
     print(redis.get("age"))
 
 
-if __name__ == "__main__":
-    main()
+class User(BaseModel):
+    name: str
+    age: int
+
+
+data = User(name="zoku", age=22)
+print(data.name)
+
+
+data_dict = User(name="wduzoku", age=21313213213).model_dump()
+print(data_dict["wduzoku"])
+
+print(
+    User(
+        name="wduzoku",
+        age=21313213213,
+    ).model_dump(mode="json")
+)

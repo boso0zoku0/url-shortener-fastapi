@@ -76,5 +76,5 @@ def add_token(token: str) -> None:
 
 @router.post("/transfer")
 def transfer_short_url() -> dict[str, str]:
-    return {"hello": "world"}
-    # raise ValueError
+    # return {"hello": "world"}
+    raise ValueError
