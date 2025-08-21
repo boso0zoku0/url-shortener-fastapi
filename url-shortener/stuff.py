@@ -37,9 +37,6 @@ data = User(name="zoku", age=22)
 print(data.name)
 
 
-data_dict = User(name="wduzoku", age=21313213213).model_dump()
-print(data_dict["wduzoku"])
-
 print(
     User(
         name="wduzoku",
