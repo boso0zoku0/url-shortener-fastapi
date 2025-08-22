@@ -21,6 +21,10 @@ dev = [
     "ruff>=0.12.5",
 ]
 
+[tool.uv]
+required-version = "~=0.7.15"
+
+
 [tool.pytest.ini_options]
 minversion = "8.3"
 addopts = "-ra --strict-markers"
