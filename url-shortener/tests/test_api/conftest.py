@@ -76,7 +76,7 @@ def create_short_url_not_exists(
     slug: str,
     target_url: str | AnyHttpUrl = "https://www.example.com/",
     description: str = "It's desc",
-) -> ShortUrlCreate:
+) -> ShortUrl:
     short_url = build_short_url_create(
         slug, description=description, target_url=target_url
     )
@@ -86,7 +86,7 @@ def create_short_url_not_exists(
 def create_short_url_random_slug(
     target_url: str | AnyHttpUrl = "https://www.example.com/",
     description: str = "It's desc",
-) -> ShortUrlCreate:
+) -> ShortUrl:
     short_url = build_short_url_create_random_slug(
         description=description, target_url=target_url
     )

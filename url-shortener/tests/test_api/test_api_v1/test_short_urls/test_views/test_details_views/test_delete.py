@@ -10,6 +10,7 @@ import sys
 from typing import Generator
 import logging
 import pytest
+from _pytest.capture import CaptureFixture
 from _pytest.fixtures import SubRequest
 from fastapi import status
 from starlette.testclient import TestClient
@@ -47,7 +48,7 @@ def test_short_url_delete(auth_client: TestClient, short_url: ShortUrl) -> None:
     assert not storage.exists(short_url.slug)
 
 
-def test_disabling_capturing(capsys):
+def test_disabling_capturing(capsys: CaptureFixture[str]) -> None:
     print("this output is captured")
     with capsys.disabled():
         print("output not captured, going directly to sys.stdout")
