@@ -2,8 +2,6 @@ from pydantic import BaseModel
 from redis import Redis
 
 from core import config
-import os
-
 redis = Redis(
     host=config.REDIS_HOST,
     port=config.REDIS_PORT,
