@@ -25,20 +25,3 @@ def main() -> None:
     redis.delete("age")
     print(redis.get("name"))
     print(redis.get("age"))
-
-#
-# class User(BaseModel):
-#     name: str
-#     age: int
-#
-#
-# data = User(name="zoku", age=22)
-# print(data.name)
-#
-#
-# print(
-#     User(
-#         name="wduzoku",
-#         age=21313213213,
-#     ).model_dump(mode="json")
-# )
