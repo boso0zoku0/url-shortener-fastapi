@@ -12,7 +12,7 @@ on:
       - "url-shortener/**"
 
 jobs:
-  run-black:
+  run-checks:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,13 +25,6 @@ jobs:
           pip install "black==25.1.0"
       - name: Black ⬛
         run: black --check --diff ./
-
-
-  run-mypy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
       - name: Setup uv
         uses: astral-sh/setup-uv@v5
         with:
