@@ -2,16 +2,16 @@ from collections.abc import Generator
 
 import pytest
 from _pytest.fixtures import SubRequest
-from fastapi.testclient import TestClient
 from fastapi import status
+from fastapi.testclient import TestClient
 from pydantic import AnyHttpUrl
 
 from api.api_v1.short_urls.crud import storage
+from main import app
+from schemas.short_url import ShortUrl, ShortUrlCreate
 from tests.test_api.conftest import (
     create_short_url_random_slug,
 )
-from main import app
-from schemas.short_url import ShortUrlCreate, ShortUrl
 
 pytestmark = pytest.mark.apitest
 

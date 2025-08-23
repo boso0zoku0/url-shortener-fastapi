@@ -1,13 +1,15 @@
+from os import getenv
+from unittest import TestCase
+
 import pytest
 from pydantic import ValidationError
-from os import getenv
+
 from schemas.short_url import (
     ShortUrl,
     ShortUrlCreate,
     ShortUrlUpdate,
     ShortUrlUpdatePartial,
 )
-from unittest import TestCase
 
 
 class ShortUrlTestCase(TestCase):

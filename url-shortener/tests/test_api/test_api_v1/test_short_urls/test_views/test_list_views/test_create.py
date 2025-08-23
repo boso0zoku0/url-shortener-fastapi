@@ -7,12 +7,12 @@ from typing import Any
 
 import pytest
 from _pytest.fixtures import SubRequest
-from fastapi.testclient import TestClient
 from fastapi import status
+from fastapi.testclient import TestClient
 
-from tests.test_api.conftest import short_url, build_short_url_create_random_slug
 from main import app
-from schemas.short_url import ShortUrlCreate, ShortUrl
+from schemas.short_url import ShortUrl, ShortUrlCreate
+from tests.test_api.conftest import build_short_url_create_random_slug, short_url
 
 pytestmark = pytest.mark.apitest
 
