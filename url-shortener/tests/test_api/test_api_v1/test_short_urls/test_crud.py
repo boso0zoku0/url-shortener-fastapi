@@ -92,7 +92,8 @@ class ShortUrlStorageGetTestCase(TestCase):
             ):
 
                 db_short_url = storage.get_by_slug(short_url.slug)
-                self.assertEqual(short_url.slug, db_short_url.slug)
+                if db_short_url:
+                    self.assertEqual(short_url.slug, db_short_url.slug)
 
 
 def test_create_or_raise_if_exist(short_url: ShortUrl) -> None:

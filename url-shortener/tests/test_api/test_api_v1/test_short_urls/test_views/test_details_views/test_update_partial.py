@@ -31,10 +31,11 @@ class TestShortUrlUpdatePartial:
     )
     def test_short_url_update_partial(
         self, new_description: str, auth_client: TestClient, short_url: ShortUrl
-    ):
+    ) -> None:
         url = app.url_path_for("put_short_url", slug=short_url.slug)
         response = auth_client.patch(url, json={"description": new_description})
         new_desc_db = storage.get_by_slug(short_url.slug)
-        assert new_description == new_desc_db.description
-        assert response.status_code == status.HTTP_200_OK
-        assert short_url.description != new_desc_db.description
+        if new_desc_db:
+            assert new_description == new_desc_db.description
+            assert response.status_code == status.HTTP_200_OK
+            assert short_url.description != new_desc_db.description

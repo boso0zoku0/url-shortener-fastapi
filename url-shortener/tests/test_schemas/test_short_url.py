@@ -14,6 +14,7 @@ class ShortUrlTestCase(TestCase):
 
     def test_short_url_can_be_created_from_create_schema(self) -> None:
         short_url_in = ShortUrlCreate(
+            slug="short",
             target_url="https://example.com",
             description="A short url example",
         )
@@ -70,7 +71,7 @@ class ShortUrlsSubTestTestCase(TestCase):
             with self.subTest(url=url, msg="added short url"):
 
                 short_url_in = ShortUrlCreate(
-                    target_url=url, description="another short url"
+                    target_url=url, slug="qweabc", description="another short url"
                 )
 
                 self.assertEqual(
@@ -86,6 +87,7 @@ class ShortUrlsComplicatedTestCase(TestCase):
         with self.assertRaises(ValidationError) as exc_type:
             ShortUrlCreate(
                 target_url="https://example.com",
+                slug="abcqwe",
                 description="This string contains more than thirty alphabetic characters.",
             )
             error_type = exc_type.exception.errors()[0]
@@ -98,6 +100,7 @@ class ShortUrlsComplicatedTestCase(TestCase):
         ) as exc_info:
             ShortUrlCreate(
                 target_url="https://example.com",
+                slug="abcqwe",
                 description="This string contains more than thirty alphabetic characters.",
             )
         error_details = exc_info.exception.errors()[0]

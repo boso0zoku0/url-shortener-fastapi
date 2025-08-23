@@ -51,10 +51,10 @@ class TestShortUrlUpdate:
         short_url: ShortUrl,
         new_description: str,
         new_target_url: str | AnyHttpUrl,
-    ):
+    ) -> None:
         url = app.url_path_for("put_short_url", slug=short_url.slug)
         new_short_url = ShortUrlCreate(
-            description=new_description, target_url=new_target_url
+            slug="qweabc", description=new_description, target_url=new_target_url
         )
         response = auth_client.put(url, json=new_short_url.model_dump(mode="json"))
         assert response.status_code == status.HTTP_200_OK
