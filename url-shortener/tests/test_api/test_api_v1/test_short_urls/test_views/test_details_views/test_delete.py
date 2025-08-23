@@ -6,9 +6,10 @@
 
 """
 
+import logging
 import sys
 from typing import Generator
-import logging
+
 import pytest
 from _pytest.capture import CaptureFixture
 from _pytest.fixtures import SubRequest
@@ -16,8 +17,8 @@ from fastapi import status
 from starlette.testclient import TestClient
 
 from api.api_v1.short_urls.crud import storage
-from schemas.short_url import ShortUrl, ShortUrlCreate
 from main import app
+from schemas.short_url import ShortUrl, ShortUrlCreate
 
 pytestmark = pytest.mark.apitest
 
