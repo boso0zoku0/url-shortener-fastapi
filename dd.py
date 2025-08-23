@@ -14,7 +14,6 @@
 # print(data)
 
 import os
-import pprint
 
 # os.environ["name"] = "zoku"
 
