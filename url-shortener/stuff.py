@@ -1,4 +1,3 @@
-from pydantic import BaseModel
 from redis import Redis
 
 from core import config
