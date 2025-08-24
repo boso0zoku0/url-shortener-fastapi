@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-import pytest
+
 from pydantic import ValidationError
 
 from schemas.short_url import (
