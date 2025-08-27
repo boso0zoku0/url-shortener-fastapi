@@ -25,3 +25,7 @@ def main() -> None:
     redis.delete("age")
     print(redis.get("name"))
     print(redis.get("age"))
+
+
+if __name__ == "__main__":
+    main()
