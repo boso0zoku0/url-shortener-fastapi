@@ -20,7 +20,7 @@ class ShortUrlCreate(ShortUrlBase):
 class ShortUrl(BaseModel):
     target_url: AnyHttpUrl
     description: ShortAnnotated_30_symbol = ""
-    slug: ShortAnnotated_10_symbol
+    slug: ShortAnnotated_10_symbol = ""
     visits: int = 42
 
 

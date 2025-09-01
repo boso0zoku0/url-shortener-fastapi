@@ -60,7 +60,7 @@ def create_short_url(short_url_in: ShortUrlCreate) -> ShortUrl:
     except ShortUrlAlreadyExists:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail=f"Short URL with slug ->> {short_url_in.slug} already exists",
+            detail=f"Short URL with slug = {short_url_in.slug} already exists",
         )
 
 
