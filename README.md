@@ -1,5 +1,6 @@
 # FastAPI URL Shortener
-
+[![Python checks](https://img.shields.io/github/actions/workflow/status/OWNER/REPO/python-checks.yaml?branch=main&style=for-the-badge&label=Python%20checks&logo=github)](https://github.com/boso0zoku0/url-shortener-fastapi/actions/workflows/python-checks.yaml)
+                                                                                                                                                                            
 ## Develop
 
 Check GitHub Actions after any push
