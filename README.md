@@ -1,5 +1,5 @@
 # FastAPI URL Shortener
-                                                                                                                                                                           
+
 ## Develop
 
 Check GitHub Actions after any push
