@@ -12,7 +12,11 @@ from fastapi.testclient import TestClient
 
 from main import app
 from schemas.short_url import ShortUrl, ShortUrlCreate
-from tests.test_api.conftest import build_short_url_create_random_slug, short_url
+from tests.test_api.conftest import (
+    build_short_url_create_random_slug,
+    short_url,
+    build_short_url_create,
+)
 
 pytestmark = pytest.mark.apitest
 
