@@ -8,6 +8,7 @@
 
 import logging
 import sys
+from http.client import responses
 from typing import Generator
 
 import pytest
