@@ -1,19 +1,14 @@
 import logging
 import random
 import string
-
-# from random import choices
 from typing import Any
-
 import pytest
 from _pytest.fixtures import SubRequest
 from fastapi import status
 from fastapi.testclient import TestClient
-
 from main import app
 from schemas.short_url import ShortUrl, ShortUrlCreate
 from tests.test_api.conftest import (
-    build_short_url_create,
     build_short_url_create_random_slug,
     short_url,
 )
@@ -49,7 +44,7 @@ def test_short_url_already_exists(auth_client: TestClient, short_url: ShortUrl) 
     data = ShortUrlCreate(**short_url.model_dump())
     json = data.model_dump(mode="json")
     url = app.url_path_for("create_short_url")
-    response = auth_client.post(url=url, json=json)
+    response = auth_client.post(url=url, json=data)
     assert response.status_code == status.HTTP_409_CONFLICT, response.text
     response_json = response.json()
     expected_error = f"Short URL with slug = {short_url.slug} already exists"
