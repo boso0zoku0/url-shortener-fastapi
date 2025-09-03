@@ -46,7 +46,7 @@ def test_short_url_already_exists(auth_client: TestClient, short_url: ShortUrl) 
     data = ShortUrlCreate(**short_url.model_dump())
     json = data.model_dump(mode="json")
     url = app.url_path_for("create_short_url")
-    response = auth_client.post(url=url, json=data)
+    response = auth_client.post(url=url, json=json)
     assert response.status_code == status.HTTP_409_CONFLICT, response.text
     response_json = response.json()
     expected_error = f"Short URL with slug = {short_url.slug} already exists"

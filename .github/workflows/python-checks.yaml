@@ -74,5 +74,5 @@ jobs:
       - name: Run tests
         run: uv run pytest
         env:
-          REDIS_PORT = 6379
-          TESTING = 1
+          REDIS_PORT: 6379
+          TESTING: 1
