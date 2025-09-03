@@ -22,7 +22,7 @@ DB_USERS: dict[str, str] = {"user1": "password1"}
 REDIS_HOST = getenv("REDIS_HOST", "localhost")
 
 # вход через редис
-REDIS_PORT = int(getenv("REDIS_PORT", 0)) or 6379
+REDIS_PORT = int(getenv("REDIS_PORT", "0")) or 6379
 
 
 REDIS_DB = 0
