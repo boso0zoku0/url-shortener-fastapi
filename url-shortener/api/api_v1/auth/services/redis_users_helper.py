@@ -5,6 +5,7 @@ from typing import cast
 from redis import Redis
 
 from core import config
+from core.config import settings
 
 from .users_helper import AbstractUserHelper
 
@@ -14,11 +15,13 @@ class RedisUsersHelper(AbstractUserHelper):
         self.redis = Redis(host=host, port=port, db=db, decode_responses=True)
 
     def get_user_password(self, username: str) -> str:
-        return cast(str, self.redis.hget(config.REDIS_USERS_NAME, username))
+        return cast(
+            str, self.redis.hget(settings.redis_names.redis_users_name, username)
+        )
 
 
 db_redis_users = RedisUsersHelper(
-    host=config.REDIS_HOST,
-    port=config.REDIS_PORT,
-    db=config.REDIS_DB_USERS,
+    host=settings.redis.connect.host,
+    port=settings.redis.connect.port,
+    db=settings.database.db_redis_users,
 )

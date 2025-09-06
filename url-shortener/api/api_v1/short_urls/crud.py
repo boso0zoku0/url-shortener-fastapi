@@ -7,7 +7,7 @@ from typing import cast
 from pydantic import BaseModel
 from redis import Redis
 
-from core import config
+from core.config import settings
 from schemas.short_url import (
     ShortUrl,
     ShortUrlCreate,
@@ -19,9 +19,9 @@ from schemas.short_url import (
 log = logging.getLogger(__name__)
 
 redis = Redis(
-    host=config.REDIS_HOST,
-    port=config.REDIS_PORT,
-    db=config.REDIS_DB_SHORT_URLS,
+    host=settings.redis.connect.host,
+    port=settings.redis.connect.port,
+    db=settings.database.db_redis_short_url,
     decode_responses=True,
 )
 
@@ -44,7 +44,7 @@ class ShortUrlsStorage(BaseModel):
     @classmethod
     def save_short_url(cls, short_url: ShortUrl) -> None:
         redis.hset(
-            name=config.REDIS_SHORT_URLS_HASH_NAME,
+            name=settings.redis_names.redis_short_url_hash_name,
             key=short_url.slug,
             value=short_url.model_dump_json(),
         )
@@ -53,12 +53,16 @@ class ShortUrlsStorage(BaseModel):
     def get(cls) -> list[ShortUrlRead]:
         return [
             ShortUrlRead.model_validate_json(value)
-            for value in redis.hvals(name=config.REDIS_SHORT_URLS_HASH_NAME)
+            for value in redis.hvals(
+                name=settings.redis_names.redis_short_url_hash_name
+            )
         ]
 
     @classmethod
     def get_by_slug(cls, slug: str) -> ShortUrl | None:
-        get_db = redis.hget(name=config.REDIS_SHORT_URLS_HASH_NAME, key=slug)
+        get_db = redis.hget(
+            name=settings.redis_names.redis_short_url_hash_name, key=slug
+        )
         if get_db:
             return ShortUrl.model_validate_json(get_db)
         return None
@@ -66,7 +70,10 @@ class ShortUrlsStorage(BaseModel):
     @classmethod
     def exists(cls, slug: str) -> Awaitable[bool] | bool:
         return cast(
-            bool, redis.hexists(name=config.REDIS_SHORT_URLS_HASH_NAME, key=slug)
+            bool,
+            redis.hexists(
+                name=settings.redis_names.redis_short_url_hash_name, key=slug
+            ),
         )
 
     def create(self, short_url_create: ShortUrlCreate) -> ShortUrl:
@@ -82,7 +89,7 @@ class ShortUrlsStorage(BaseModel):
 
     @classmethod
     def delete_by_slug(cls, slug: str) -> None:
-        redis.hdel(config.REDIS_SHORT_URLS_HASH_NAME, slug)
+        redis.hdel(settings.redis_names.redis_short_url_hash_name, slug)
         log.info("Deleted short url %s", slug)
 
     def delete(self, short_url: ShortUrl) -> None:
