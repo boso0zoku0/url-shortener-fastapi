@@ -1,5 +1,6 @@
 import logging
 
+import uvicorn
 from fastapi import FastAPI
 
 from api import router as api_router
@@ -17,3 +18,7 @@ app = FastAPI(lifespan=lifespan)
 app.include_router(router=api_router)
 app.include_router(router=redirect_views_router)
 app.include_router(router=main_views_router)
+
+
+if __name__ == "__main__":
+    uvicorn.run(app=app)
