@@ -5,7 +5,7 @@ from core.config import settings
 redis = Redis(
     host=settings.redis.connect.host,
     port=settings.redis.connect.port,
-    db=settings.database.db_redis,
+    db=settings.redis.database.db_redis,
     decode_responses=True,
 )
 

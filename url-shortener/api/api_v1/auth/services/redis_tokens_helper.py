@@ -41,9 +41,8 @@ class RedisTokensHelper(AbstractTokenHelper):
 
 
 db_redis_tokens = RedisTokensHelper(
-    # host=config.REDIS_HOST,
     host=settings.redis.connect.host,
     port=settings.redis.connect.port,
-    db=settings.database.db_redis_tokens,
-    tokens_set=settings.redis_names.redis_tokens_name,
+    db=settings.redis.database.db_redis_tokens,
+    tokens_set=settings.redis.redis_names.redis_tokens_name,
 )

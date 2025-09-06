@@ -32,10 +32,6 @@ class RedisConnect(BaseModel):
     port: int = 6379
 
 
-class RedisConfig(BaseModel):
-    connect: RedisConnect = RedisConnect()
-
-
 class DataBase(BaseModel):
     db_redis: int = 0
     db_redis_tokens: int = 1
@@ -49,11 +45,15 @@ class RedisNames(BaseModel):
     redis_short_url_hash_name: str = "short_urls"
 
 
+class RedisConfig(BaseModel):
+    connect: RedisConnect = RedisConnect()
+    database: DataBase = DataBase()
+    redis_names: RedisNames = RedisNames()
+
+
 class Settings(BaseSettings):
     logging_config: LoggingConfig = LoggingConfig()
     redis: RedisConfig = RedisConfig()
-    database: DataBase = DataBase()
-    redis_names: RedisNames = RedisNames()
 
 
 settings = Settings()

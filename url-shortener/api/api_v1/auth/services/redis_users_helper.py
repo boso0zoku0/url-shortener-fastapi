@@ -16,12 +16,12 @@ class RedisUsersHelper(AbstractUserHelper):
 
     def get_user_password(self, username: str) -> str:
         return cast(
-            str, self.redis.hget(settings.redis_names.redis_users_name, username)
+            str, self.redis.hget(settings.redis.redis_names.redis_users_name, username)
         )
 
 
 db_redis_users = RedisUsersHelper(
     host=settings.redis.connect.host,
     port=settings.redis.connect.port,
-    db=settings.database.db_redis_users,
+    db=settings.redis.database.db_redis_users,
 )
