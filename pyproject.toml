@@ -100,7 +100,6 @@ select = [
     "FAST", # FastAPI (FAST)
     "YTT", # flake8-2020 (YTT)
     "ANN", # flake8-annotations (ANN)
-    # "ASYNC", # flake8-async (ASYNC)
     "BLE", # flake8-blind-except (BLE)
     "FBT", # flake8-boolean-trap (FBT)
     "C4", # flake8-comprehensions (C4)
@@ -112,7 +111,6 @@ select = [
     "G", # flake8-logging-format (G)
     "PIE", # flake8-pie (PIE)
     "PYI", # flake8-pyi (PYI)
-    # "PT", # flake8-pytest-style (PT)
     "Q", # flake8-quotes (Q)
     "RSE", # flake8-raise (RSE)
     "RET", # flake8-return (RET)
@@ -123,15 +121,12 @@ select = [
     "PTH", # flake8-use-pathlib (PTH)
     "FLY", # flynt (FLY)
     "I", # isort (I)
-    # "DOC", # pydoclint (DOC)
-    # "D", # pydocstyle (D)
     "PGH", # pygrep-hooks (PGH)
     "PLC", # Pylint Convention (PLC)
     "PLE", # Pylint Error (PLE)
     "PLR", # Pylint Refactor (PLR)
     "PLW", # Pylint Warning (PLW)
     "FURB", # refurb (FURB)
-    "TRY", # tryceratops (TRY)
 ]
 ignore = [
     "S101", # S101	assert	Use of assert detected
@@ -139,6 +134,11 @@ ignore = [
     "RUF002", # ambiguous-unicode-character-docstring (RUF002)
     "RUF003", # ambiguous-unicode-character-comment (RUF003)
     "TC006", # runtime-cast-value (TC006)
+    "TRY", # tryceratops (TRY)
+    "DOC", # pydoclint (DOC)
+    "D", # pydocstyle (D)
+    "PT", # flake8-pytest-style (PT)
+    "ASYNC", # flake8-async (ASYNC)
 ]
 
 # Allow fix for all enabled rules (when `--fix`) is provided.

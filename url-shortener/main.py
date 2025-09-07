@@ -10,9 +10,9 @@ from app_lifespan import lifespan
 from core.config import settings
 
 logging.basicConfig(
-    format=settings.logging_config.log_format,
-    level=settings.logging_config.log_level,
-    datefmt=settings.logging_config.datefmt,
+    format=settings.logging.log_format,
+    level=settings.logging.log_level,
+    datefmt=settings.logging.datefmt,
 )
 app = FastAPI(lifespan=lifespan)
 app.include_router(router=api_router)
