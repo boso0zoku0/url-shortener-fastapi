@@ -46,6 +46,7 @@ jobs:
 
   run-tests:
     runs-on: ubuntu-latest
+    container: node:20-bookworm-slim
     needs:
       - run-checks
     services:
@@ -56,8 +57,6 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-        ports:
-          - 6379:6379
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -74,4 +73,5 @@ jobs:
         run: uv run pytest
         env:
           TESTING: 1
-          REDIS_PORT: 6379
+          URL_SHORTENER__REDIS_CONNECT_PORT: 6379
+          URL_SHORTENER__REDIS_CONNECT_HOST: redis
