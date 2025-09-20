@@ -178,3 +178,6 @@ cython_debug/
 
 short-urls.json
 .secrets
+rabbitmq/
+sock/
+faststream/

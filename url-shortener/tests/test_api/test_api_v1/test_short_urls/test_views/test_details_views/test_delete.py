@@ -1,16 +1,3 @@
-"""
-функция создание шорт урла по в параметрах слаг который пркоинуть дальше
-
-ффикстура которая возвраащет эту функцию
-
-
-"""
-
-import logging
-import sys
-from http.client import responses
-from typing import Generator
-
 import pytest
 from _pytest.capture import CaptureFixture
 from _pytest.fixtures import SubRequest
@@ -55,11 +42,3 @@ def test_disabling_capturing(capsys: CaptureFixture[str]) -> None:
     with capsys.disabled():
         print("output not captured, going directly to sys.stdout")
     print("this output is also captured")
-
-
-# def test_output_capture(capfd):
-#     print("Это stdout")
-#     print("Это stderr", file=sys.stderr)
-#     out, err = capfd.readouterr()
-#     assert "stdout" in out
-#     assert "stderr" in err

@@ -1,7 +1,6 @@
 import logging
 
 from fastapi import APIRouter, Depends, HTTPException, status
-
 from api.api_v1.auth.services.redis_tokens_helper import db_redis_tokens
 from api.api_v1.dependencies import (
     api_token_or_basic_auth_for_unsafe_methods,

@@ -38,7 +38,7 @@ class RedisConnect(BaseModel):
     port: int = 6379
 
 
-class DataBase(BaseModel):
+class DataBaseRedis(BaseModel):
     db_redis: int = 0
     db_redis_tokens: int = 1
     db_redis_users: int = 2
@@ -60,7 +60,7 @@ class RedisNames(BaseModel):
 
 class RedisConfig(BaseModel):
     connect: RedisConnect = RedisConnect()
-    database: DataBase = DataBase()
+    database: DataBaseRedis = DataBaseRedis()
     redis_names: RedisNames = RedisNames()
 
 
