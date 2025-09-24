@@ -8,19 +8,17 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 BASE_DIR = Path(__file__).resolve().parent.parent
 SHORT_URLS_STORAGE_FILEPATH = BASE_DIR / "short_urls.json"
 
-ERROR_DB = "Database already exists"
-
 LOG_FORMAT: str = (
     "[%(asctime)s.%(msecs)03d] %(module)10s:%(lineno)-3d %(levelname)-7s - %(message)s"
 )
 
 # вход по httpbearer
-API_TOKENS: frozenset[str] = frozenset(
-    {"eD83xIM7oJMn-WmuiDJPJQ", "HDk4YMx_Lu54ETlueqxTdw"}
-)
+# API_TOKENS: frozenset[str] = frozenset(
+#     {"eD83xIM7oJMn-WmuiDJPJQ", "HDk4YMx_Lu54ETlueqxTdw"}
+# )
 
 # вход по httpbasic
-DB_USERS: dict[str, str] = {"user1": "password1"}
+# DB_USERS: dict[str, str] = {"user1": "password1"}
 
 
 class LoggingConfig(BaseModel):
@@ -48,7 +46,7 @@ class DataBaseRedis(BaseModel):
     def dbs_validate_unique_numbers(self) -> Self:
         db_values = list(self.model_dump().values())
         if len(set(db_values)) != len(db_values):
-            raise ValueError(ERROR_DB)
+            raise ValueError("Database already exists")
         return self
 
 

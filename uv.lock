@@ -331,6 +331,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "fastapi", extra = ["standard"] },
     { name = "faststream", extra = ["rabbit"] },
+    { name = "jinja2" },
     { name = "pika" },
     { name = "pydantic-settings" },
     { name = "rabbitmq" },
@@ -355,6 +356,7 @@ dev = [
 requires-dist = [
     { name = "fastapi", extras = ["standard"], specifier = ">=0.115.10" },
     { name = "faststream", extras = ["rabbit"], specifier = ">=0.5.48" },
+    { name = "jinja2", specifier = ">=3.1.6" },
     { name = "pika", specifier = ">=1.3.2" },
     { name = "pydantic-settings", specifier = ">=2.10.1" },
     { name = "rabbitmq", specifier = ">=0.2.0" },

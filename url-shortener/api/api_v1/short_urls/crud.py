@@ -40,40 +40,36 @@ class ShortUrlAlreadyExists(ShortUrlBaseError):
 
 class ShortUrlsStorage(BaseModel):
     slug_by_short_urls: dict[str, ShortUrl] = {}
+    name_db: str
 
-    @classmethod
-    def save_short_url(cls, short_url: ShortUrl) -> None:
+    def save_short_url(self, short_url: ShortUrl) -> None:
         redis.hset(
-            name=settings.redis.redis_names.redis_short_url_hash_name,
+            name=self.name_db,
             key=short_url.slug,
             value=short_url.model_dump_json(),
         )
 
-    @classmethod
-    def get(cls) -> list[ShortUrlRead]:
+    def get(self) -> list[ShortUrlRead]:
         return [
             ShortUrlRead.model_validate_json(value)
             for value in redis.hvals(
-                name=settings.redis.redis_names.redis_short_url_hash_name
+                name=self.name_db,
             )
         ]
 
-    @classmethod
-    def get_by_slug(cls, slug: str) -> ShortUrl | None:
+    def get_by_slug(self, slug: str) -> ShortUrl | None:
         get_db = redis.hget(
-            name=settings.redis.redis_names.redis_short_url_hash_name, key=slug
+            name=self.name_db,
+            key=slug,
         )
         if get_db:
             return ShortUrl.model_validate_json(get_db)
         return None
 
-    @classmethod
-    def exists(cls, slug: str) -> Awaitable[bool] | bool:
+    def exists(self, slug: str) -> Awaitable[bool] | bool:
         return cast(
             bool,
-            redis.hexists(
-                name=settings.redis.redis_names.redis_short_url_hash_name, key=slug
-            ),
+            redis.hexists(name=self.name_db, key=slug),
         )
 
     def create(self, short_url_create: ShortUrlCreate) -> ShortUrl:
@@ -87,9 +83,8 @@ class ShortUrlsStorage(BaseModel):
             return storage.create(short_url_in)
         raise ShortUrlAlreadyExists(short_url_in.slug)
 
-    @classmethod
-    def delete_by_slug(cls, slug: str) -> None:
-        redis.hdel(settings.redis.redis_names.redis_short_url_hash_name, slug)
+    def delete_by_slug(self, slug: str) -> None:
+        redis.hdel(self.name_db, slug)
         log.info("Deleted short url %s", slug)
 
     def delete(self, short_url: ShortUrl) -> None:
@@ -114,4 +109,4 @@ class ShortUrlsStorage(BaseModel):
         return short_url
 
 
-storage = ShortUrlsStorage()
+storage = ShortUrlsStorage(name_db=settings.redis.redis_names.redis_short_url_hash_name)
