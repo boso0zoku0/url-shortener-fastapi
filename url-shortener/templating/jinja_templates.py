@@ -1,7 +1,7 @@
 from datetime import date, datetime
 
-from fastapi.templating import Jinja2Templates
 from fastapi import Request
+from fastapi.templating import Jinja2Templates
 
 from core.config import BASE_DIR
 
