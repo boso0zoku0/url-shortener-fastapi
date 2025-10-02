@@ -1,6 +1,8 @@
 import logging
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from pydantic import BaseModel
+
 from api.api_v1.auth.services.redis_tokens_helper import db_redis_tokens
 from api.api_v1.dependencies import (
     api_token_or_basic_auth_for_unsafe_methods,
@@ -29,6 +31,11 @@ router = APIRouter(
         },
     },
 )
+
+
+@router.post("/website/transaction")
+def user_trans(payment: Payment):
+    return validate_transactions(payment)
 
 
 @router.get("/read-urls", response_model=list[ShortUrl])
