@@ -8,7 +8,7 @@ from templating.jinja_templates import templates
 router = APIRouter()
 
 
-@router.get("/home", response_class=HTMLResponse, include_in_schema=False, name="home")
+@router.get("/home/", response_class=HTMLResponse, include_in_schema=False, name="home")
 def home_page(
     request: Request,
 ) -> HTMLResponse:
@@ -31,9 +31,5 @@ def about_page(request: Request) -> HTMLResponse:
 
 
 @router.get("/")
-def read_root(request: Request, name: str = "World") -> dict[str, str]:
-    docs_url = request.url.replace(path="/docs", query="")
-    return {
-        "message": f"Hello {name}",
-        "docs": str(docs_url),
-    }
+def read_root(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(request=request, name="init.html")

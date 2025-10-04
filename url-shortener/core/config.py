@@ -92,4 +92,4 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
-print(settings.redis.database)
+print(settings.logging.log_level_name)

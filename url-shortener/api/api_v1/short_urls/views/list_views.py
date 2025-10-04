@@ -33,11 +33,6 @@ router = APIRouter(
 )
 
 
-@router.post("/website/transaction")
-def user_trans(payment: Payment):
-    return validate_transactions(payment)
-
-
 @router.get("/read-urls", response_model=list[ShortUrl])
 def read_short_urls_list() -> list[ShortUrlRead]:
     return storage.get()
