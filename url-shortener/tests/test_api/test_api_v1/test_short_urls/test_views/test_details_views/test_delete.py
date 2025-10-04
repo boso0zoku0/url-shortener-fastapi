@@ -4,7 +4,7 @@ from _pytest.fixtures import SubRequest
 from fastapi import status
 from starlette.testclient import TestClient
 
-from api.api_v1.short_urls.crud import storage
+from storage.short_urls.crud import storage
 from main import app
 from schemas.short_url import ShortUrl, ShortUrlCreate
 

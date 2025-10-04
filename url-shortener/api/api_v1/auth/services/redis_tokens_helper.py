@@ -1,7 +1,7 @@
 __all__ = ("db_redis_tokens",)
 
 import secrets
-from typing import cast
+from typing import cast, Iterable
 
 from redis import Redis
 
@@ -26,7 +26,7 @@ class RedisTokensHelper(AbstractTokenHelper):
         cast(str, self.redis.sadd(self.tokens_set, token))
 
     def get_all_tokens(self) -> list[str]:
-        return list(self.redis.smembers(self.tokens_set))
+        return list(cast(Iterable[str], self.redis.smembers(self.tokens_set)))
 
     def delete_token(self, token: str) -> None:
         self.redis.srem(self.tokens_set, token)

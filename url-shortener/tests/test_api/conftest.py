@@ -3,12 +3,11 @@ import string
 from typing import Generator
 
 import pytest
-from _pytest.fixtures import SubRequest
 from fastapi.testclient import TestClient
 from pydantic import AnyHttpUrl
 
 from api.api_v1.auth.services import db_redis_tokens
-from api.api_v1.short_urls.crud import storage
+from storage.short_urls.crud import storage
 from main import app
 from schemas.short_url import ShortUrl, ShortUrlCreate
 

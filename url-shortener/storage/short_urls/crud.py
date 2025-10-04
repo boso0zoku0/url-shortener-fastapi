@@ -1,8 +1,8 @@
-__all__ = ("storage", "ShortUrlAlreadyExists")
+__all__ = ("storage",)
 
 import logging
 from collections.abc import Awaitable
-from typing import cast
+from typing import cast, Iterable
 
 from pydantic import BaseModel
 from redis import Redis
@@ -15,6 +15,7 @@ from schemas.short_url import (
     ShortUrlUpdate,
     ShortUrlUpdatePartial,
 )
+from storage.short_urls.exceptions import ShortUrlAlreadyExists
 
 log = logging.getLogger(__name__)
 
@@ -24,18 +25,6 @@ redis = Redis(
     db=settings.redis.database.db_redis_short_url,
     decode_responses=True,
 )
-
-
-class ShortUrlBaseError(Exception):
-    """
-    Base exception for short url CRUD actions
-    """
-
-
-class ShortUrlAlreadyExists(ShortUrlBaseError):
-    """
-    Raised on short url creation if such slug already exists
-    """
 
 
 class ShortUrlsStorage(BaseModel):
@@ -52,18 +41,22 @@ class ShortUrlsStorage(BaseModel):
     def get(self) -> list[ShortUrlRead]:
         return [
             ShortUrlRead.model_validate_json(value)
-            for value in redis.hvals(
-                name=self.name_db,
+            for value in cast(
+                Iterable[str],
+                redis.hvals(
+                    name=self.name_db,
+                ),
             )
         ]
 
     def get_by_slug(self, slug: str) -> ShortUrl | None:
-        get_db = redis.hget(
+        if data := redis.hget(
             name=self.name_db,
             key=slug,
-        )
-        if get_db:
-            return ShortUrl.model_validate_json(get_db)
+        ):
+            assert isinstance(data, str)
+            return ShortUrl.model_validate_json(data)
+
         return None
 
     def exists(self, slug: str) -> Awaitable[bool] | bool:

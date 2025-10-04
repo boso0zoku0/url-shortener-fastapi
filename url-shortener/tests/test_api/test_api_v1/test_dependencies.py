@@ -1,9 +1,7 @@
 from unittest import TestCase
 
-import pytest
-
 from api.api_v1.dependencies import UNSAFE_METHODS, prefetch_url
-from api.api_v1.short_urls.crud import storage
+from storage.short_urls.crud import storage
 
 
 class DependsTestCase(TestCase):

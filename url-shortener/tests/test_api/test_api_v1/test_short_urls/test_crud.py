@@ -4,11 +4,9 @@ from typing import ClassVar, List
 from unittest import TestCase
 
 import pytest
-from _pytest.fixtures import SubRequest
-from fastapi.testclient import TestClient
-from starlette import status
 
-from api.api_v1.short_urls.crud import ShortUrlAlreadyExists, storage
+from storage.short_urls.crud import storage
+from storage.short_urls.exceptions import ShortUrlAlreadyExists
 from schemas.short_url import (
     ShortUrl,
     ShortUrlCreate,

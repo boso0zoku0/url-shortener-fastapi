@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from starlette import status
 
 from api.api_v1.dependencies import prefetch_url
-from api.api_v1.short_urls.crud import storage
+from storage.short_urls.crud import storage
 from schemas.short_url import (
     ShortUrl,
     ShortUrlRead,
