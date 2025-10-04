@@ -3,27 +3,22 @@ from pathlib import Path
 from typing import Literal, Self
 
 from pydantic import BaseModel, model_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import (
+    BaseSettings,
+    SettingsConfigDict,
+    PydanticBaseSettingsSource,
+    YamlConfigSettingsSource,
+)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SHORT_URLS_STORAGE_FILEPATH = BASE_DIR / "short_urls.json"
 
-LOG_FORMAT: str = (
-    "[%(asctime)s.%(msecs)03d] %(module)10s:%(lineno)-3d %(levelname)-7s - %(message)s"
-)
-
-# вход по httpbearer
-# API_TOKENS: frozenset[str] = frozenset(
-#     {"eD83xIM7oJMn-WmuiDJPJQ", "HDk4YMx_Lu54ETlueqxTdw"}
-# )
-
-# вход по httpbasic
-# DB_USERS: dict[str, str] = {"user1": "password1"}
-
 
 class LoggingConfig(BaseModel):
-    log_level_name: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = "INFO"
-    log_format: str = LOG_FORMAT
+    log_level_name: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = "DEBUG"
+    log_format: str = (
+        "[%(asctime)s.%(msecs)03d] %(module)10s:%(lineno)-3d %(levelname)-7s - %(message)s"
+    )
     datefmt: str = "%Y-%m-%d %H:%M:%S"
 
     @property
@@ -71,11 +66,30 @@ class Settings(BaseSettings):
         ),
         env_nested_delimiter="__",
         env_prefix="URL_SHORTENER__",
+        yaml_file=BASE_DIR / "config.default.yaml",
+        yaml_config_section="url-shortener",
     )
     logging: LoggingConfig = LoggingConfig()
     redis: RedisConfig = RedisConfig()
 
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls: type[BaseSettings],
+        init_settings: PydanticBaseSettingsSource,
+        env_settings: PydanticBaseSettingsSource,
+        dotenv_settings: PydanticBaseSettingsSource,
+        file_secret_settings: PydanticBaseSettingsSource,
+    ) -> tuple[PydanticBaseSettingsSource, ...]:
+
+        return (
+            init_settings,
+            env_settings,
+            dotenv_settings,
+            file_secret_settings,
+            YamlConfigSettingsSource(settings_cls),
+        )
+
 
 settings = Settings()
-print(settings.logging)
-print(settings.redis.database)
+print(settings.logging.log_level)

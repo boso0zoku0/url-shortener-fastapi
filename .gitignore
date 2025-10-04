@@ -181,3 +181,4 @@ short-urls.json
 rabbitmq/
 sock/
 faststream/
+config.local.yaml
