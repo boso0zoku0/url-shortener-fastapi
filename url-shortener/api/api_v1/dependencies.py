@@ -14,7 +14,8 @@ from fastapi.security import (
 
 from api.api_v1.auth.services.redis_tokens_helper import db_redis_tokens
 from api.api_v1.auth.services.redis_users_helper import db_redis_users
-from storage.short_urls.crud import storage
+from dependencies.short_urls import GetShortUrlsStorage
+
 from schemas.short_url import ShortUrl
 
 log = logging.getLogger(__name__)
@@ -42,7 +43,7 @@ UNSAFE_METHODS = frozenset(
 )
 
 
-def prefetch_url(slug: str) -> ShortUrl | None:
+def prefetch_url(slug: str, storage: GetShortUrlsStorage) -> ShortUrl | None:
     url: ShortUrl | None = storage.get_by_slug(slug=slug)
     if url:
         return url

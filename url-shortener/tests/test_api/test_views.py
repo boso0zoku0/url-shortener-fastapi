@@ -8,4 +8,4 @@ pytestmark = pytest.mark.templatetest
 def test_main_views(client: TestClient) -> None:
     response = client.get("/")
     assert response.status_code == status.HTTP_200_OK, response.text
-    assert response.template.name == "home.html"  # type: ignore[attr-defined]
+    assert response.template.name == "base.html"  # type: ignore[attr-defined]

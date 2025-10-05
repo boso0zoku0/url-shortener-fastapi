@@ -1,6 +1,7 @@
 from unittest import TestCase
 
 from api.api_v1.dependencies import UNSAFE_METHODS, prefetch_url
+from dependencies.short_urls import GetShortUrlsStorage
 from storage.short_urls.crud import storage
 
 
@@ -9,7 +10,7 @@ class DependsTestCase(TestCase):
     def test_prefetch_url(self) -> None:
         slugs = {su.slug for su in storage.get()}
         for slug in slugs:
-            prefetch_url(slug)
+            prefetch_url(slug, storage=storage)
             self.assertTrue(slug)
 
 
