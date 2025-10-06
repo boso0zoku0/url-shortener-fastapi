@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+
 from rest.main_views import router as main_views_router
 from rest.short_urls import router as short_urls_views_router
 

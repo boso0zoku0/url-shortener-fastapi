@@ -4,10 +4,10 @@ import uvicorn
 from fastapi import FastAPI
 
 from api import router as api_router
-from rest import router as rest_router
 from api.redirect_views import router as redirect_views_router
 from app_lifespan import lifespan
 from core.config import settings
+from rest import router as rest_router
 
 logging.basicConfig(
     format=settings.logging.log_format,

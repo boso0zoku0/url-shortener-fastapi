@@ -5,8 +5,8 @@ from typing import Literal, Self
 from pydantic import BaseModel, model_validator
 from pydantic_settings import (
     BaseSettings,
-    SettingsConfigDict,
     PydanticBaseSettingsSource,
+    SettingsConfigDict,
     YamlConfigSettingsSource,
 )
 
@@ -41,7 +41,8 @@ class DataBaseRedis(BaseModel):
     def dbs_validate_unique_numbers(self) -> Self:
         db_values = list(self.model_dump().values())
         if len(set(db_values)) != len(db_values):
-            raise ValueError("Database already exists")
+            error = "Database already exists"
+            raise ValueError(error)
         return self
 
 

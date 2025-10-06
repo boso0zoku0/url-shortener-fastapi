@@ -9,8 +9,8 @@ from templating.jinja_templates import templates
 router = APIRouter()
 
 
-@router.get("/", name="homee", include_in_schema=False)
-def home_page(request: Request) -> HTMLResponse:
+@router.get("/", name="initial", include_in_schema=False)
+def init_page(request: Request) -> HTMLResponse:
     context: dict[str, Any] = {}
     features = [
         "Create short URLs",

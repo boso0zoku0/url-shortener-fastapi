@@ -4,9 +4,9 @@ from _pytest.fixtures import SubRequest
 from fastapi import status
 from starlette.testclient import TestClient
 
-from storage.short_urls.crud import storage
 from main import app
 from schemas.short_url import ShortUrl, ShortUrlCreate
+from storage.short_urls.crud import storage
 
 pytestmark = pytest.mark.apitest
 

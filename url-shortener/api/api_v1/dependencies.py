@@ -15,7 +15,6 @@ from fastapi.security import (
 from api.api_v1.auth.services.redis_tokens_helper import db_redis_tokens
 from api.api_v1.auth.services.redis_users_helper import db_redis_users
 from dependencies.short_urls import GetShortUrlsStorage
-
 from schemas.short_url import ShortUrl
 
 log = logging.getLogger(__name__)

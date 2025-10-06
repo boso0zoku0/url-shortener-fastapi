@@ -5,14 +5,14 @@ from unittest import TestCase
 
 import pytest
 
-from storage.short_urls.crud import storage
-from storage.short_urls.exceptions import ShortUrlAlreadyExists
 from schemas.short_url import (
     ShortUrl,
     ShortUrlCreate,
     ShortUrlUpdate,
     ShortUrlUpdatePartial,
 )
+from storage.short_urls.crud import storage
+from storage.short_urls.exceptions import ShortUrlAlreadyExists
 
 pytestmark = pytest.mark.apitest
 

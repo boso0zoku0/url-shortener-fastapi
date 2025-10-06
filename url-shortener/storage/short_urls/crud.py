@@ -2,7 +2,7 @@ __all__ = ("storage",)
 
 import logging
 from collections.abc import Awaitable
-from typing import cast, Iterable
+from typing import Iterable, cast
 
 from pydantic import BaseModel
 from redis import Redis

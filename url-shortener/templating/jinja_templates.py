@@ -1,13 +1,18 @@
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 
-from fastapi.templating import Jinja2Templates
 from fastapi import Request
+from fastapi.templating import Jinja2Templates
 
 from core.config import BASE_DIR
 
 
 def show_dt(request: Request) -> dict[str, date]:
-    return {"today": date.today(), "now": datetime.now()}
+    now = datetime.now(timezone.utc)
+    today = now.today()
+    return {
+        "now": now,
+        "today": today,
+    }
 
 
 templates = Jinja2Templates(

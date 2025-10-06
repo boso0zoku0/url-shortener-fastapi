@@ -6,9 +6,9 @@ from api.api_v1.auth.services.redis_tokens_helper import db_redis_tokens
 from api.api_v1.dependencies import (
     api_token_or_basic_auth_for_unsafe_methods,
 )
+from schemas.short_url import ShortUrl, ShortUrlCreate, ShortUrlRead
 from storage.short_urls.crud import storage
 from storage.short_urls.exceptions import ShortUrlAlreadyExists
-from schemas.short_url import ShortUrl, ShortUrlCreate, ShortUrlRead
 
 log = logging.getLogger(__name__)
 

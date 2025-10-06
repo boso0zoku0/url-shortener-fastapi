@@ -1,7 +1,7 @@
 __all__ = ("db_redis_tokens",)
 
 import secrets
-from typing import cast, Iterable
+from typing import Iterable, cast
 
 from redis import Redis
 
