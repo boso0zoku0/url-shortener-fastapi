@@ -2,7 +2,6 @@ import pytest
 
 from schemas.user import User, UserPost
 
-# @pytest.mark.skip(reason="Incorrect data to transfer to the scheme")
 
 code_password = "rgewejwdscvvcvmnte"
 
