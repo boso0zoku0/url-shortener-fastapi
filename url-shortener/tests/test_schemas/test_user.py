@@ -2,7 +2,6 @@ import pytest
 
 from schemas.user import User, UserPost
 
-
 code_password = "rgewejwdscvvcvmnte"
 
 
