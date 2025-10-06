@@ -1,7 +1,10 @@
+{# name, title #}
 {% set navigation = [
   ('home', 'Home'),
-  ('about', 'About')
-]%}
+  ('short-urls:list', 'Short URLs'),
+  ('about', 'About'),
+
+] %}
 
 <nav class="navbar navbar-expand bg-body-tertiary">
   <div class="container-fluid">
@@ -20,7 +23,7 @@
               {% else %}
                 class="nav-link"
               {% endif %}
-            href="/{{ name }}">{{ title }}</a>
+            href="{{ url }}">{{ title }}</a>
           </li>
         {% endfor %}
       </ul>

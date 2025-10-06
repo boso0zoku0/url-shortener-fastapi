@@ -6,7 +6,7 @@ from starlette.responses import HTMLResponse
 
 from templating.jinja_templates import templates
 
-router = APIRouter(include_in_schema=False)
+router = APIRouter()
 
 
 @router.get("/", name="homee", include_in_schema=False)

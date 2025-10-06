@@ -11,7 +11,7 @@ from pydantic_settings import (
 )
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-SHORT_URLS_STORAGE_FILEPATH = BASE_DIR / "short_urls.json"
+SHORT_URLS_STORAGE_FILEPATH = BASE_DIR / "short-urls.json"
 
 
 class LoggingConfig(BaseModel):
@@ -48,7 +48,7 @@ class DataBaseRedis(BaseModel):
 class RedisNames(BaseModel):
     redis_tokens_name: str = "tokens"
     redis_users_name: str = "users"
-    redis_short_url_hash_name: str = "short_urls"
+    redis_short_url_hash_name: str = "short-urls"
 
 
 class RedisConfig(BaseModel):
