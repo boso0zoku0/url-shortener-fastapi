@@ -1,7 +1,6 @@
 import logging
 import random
 import string
-from http.client import responses
 from typing import Any
 
 import pytest
