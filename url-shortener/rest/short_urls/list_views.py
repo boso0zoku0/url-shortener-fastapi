@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Request
 from starlette.responses import HTMLResponse
 
-from storage.short_urls import ShortUrlsStorage
 from templating import templates
 
 router = APIRouter()
