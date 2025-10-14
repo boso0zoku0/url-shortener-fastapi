@@ -334,6 +334,7 @@ dependencies = [
     { name = "jinja2" },
     { name = "pika" },
     { name = "pydantic-settings", extra = ["yaml"] },
+    { name = "python-multipart" },
     { name = "rabbitmq" },
     { name = "redis", extra = ["hiredis"] },
     { name = "requests" },
@@ -355,11 +356,12 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "fastapi", extras = ["standard"], specifier = ">=0.115.10" },
+    { name = "fastapi", extras = ["standard"], specifier = ">=0.116.1" },
     { name = "faststream", extras = ["rabbit"], specifier = ">=0.5.48" },
     { name = "jinja2", specifier = ">=3.1.6" },
     { name = "pika", specifier = ">=1.3.2" },
     { name = "pydantic-settings", extras = ["yaml"], specifier = ">=2.10.1" },
+    { name = "python-multipart", specifier = ">=0.0.20" },
     { name = "rabbitmq", specifier = ">=0.2.0" },
     { name = "redis", extras = ["hiredis"], specifier = ">=5.2.1" },
     { name = "requests", specifier = ">=2.32.5" },

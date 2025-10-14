@@ -5,12 +5,12 @@ from pydantic import AnyHttpUrl, BaseModel
 
 ShortAnnotated_10_symbol = Annotated[str, Len(min_length=3, max_length=8)]
 ShortAnnotated_30_symbol = Annotated[str, MaxLen(30), MinLen(0)]
-DESCRIPTION_MAX_LENGTH = 30
+DESCRIPTION_MAX_LENGTH = Annotated[str, MaxLen(300)]
 
 
 class ShortUrlBase(BaseModel):
     target_url: AnyHttpUrl
-    description: ShortAnnotated_30_symbol = ""
+    description: DESCRIPTION_MAX_LENGTH = ""
 
 
 class ShortUrlCreate(ShortUrlBase):
@@ -19,22 +19,22 @@ class ShortUrlCreate(ShortUrlBase):
 
 class ShortUrl(BaseModel):
     target_url: AnyHttpUrl
-    description: ShortAnnotated_30_symbol = ""
+    description: DESCRIPTION_MAX_LENGTH = ""
     slug: ShortAnnotated_10_symbol = ""
     visits: int = 42
 
 
 class ShortUrlRead(BaseModel):
     target_url: AnyHttpUrl
-    description: ShortAnnotated_30_symbol
+    description: DESCRIPTION_MAX_LENGTH
     slug: str
 
 
 class ShortUrlUpdate(BaseModel):
     target_url: AnyHttpUrl
-    description: ShortAnnotated_30_symbol
+    description: DESCRIPTION_MAX_LENGTH
 
 
 class ShortUrlUpdatePartial(BaseModel):
     target_url: AnyHttpUrl | None = None
-    description: ShortAnnotated_30_symbol | None = None
+    description: DESCRIPTION_MAX_LENGTH | None = None

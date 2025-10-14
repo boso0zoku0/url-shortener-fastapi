@@ -6,7 +6,7 @@ from starlette import status
 from starlette.testclient import TestClient
 
 from main import app
-from schemas.short_url import DESCRIPTION_MAX_LENGTH, ShortUrl
+from schemas.short_url import ShortUrl
 from storage.short_urls.crud import storage
 from tests.test_api.conftest import create_short_url_random_slug
 
@@ -25,7 +25,7 @@ class TestShortUrlUpdatePartial:
         "short_url, new_description",
         [
             pytest.param("sdafasfawqesda", "", id="max desc to min desc"),
-            pytest.param("", "a" * DESCRIPTION_MAX_LENGTH, id="no desc to max desc"),
+            pytest.param("", "a" * 40, id="no desc to max desc"),
         ],
         indirect=["short_url"],
     )

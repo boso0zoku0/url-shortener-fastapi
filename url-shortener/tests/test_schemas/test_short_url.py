@@ -86,9 +86,7 @@ class ShortUrlsComplicatedTestCase(TestCase):
     def test_short_url_create_too_long_description(self) -> None:
         with self.assertRaises(ValidationError) as exc_type:
             ShortUrlCreate(
-                target_url="https://example.com",
-                slug="abcqwe",
-                description="This string contains more than thirty alphabetic characters.",
+                target_url="https://example.com", slug="abcqwe", description=" " * 500
             )
             error_type = exc_type.exception.errors()[0]
             expected_erorr = "string_too_long"
@@ -96,12 +94,12 @@ class ShortUrlsComplicatedTestCase(TestCase):
 
     def test_short_url_too_long_description_regex(self) -> None:
         with self.assertRaisesRegex(
-            ValidationError, expected_regex="String should have at most 30 characters"
+            ValidationError, expected_regex="String should have at most 300 characters"
         ) as exc_info:
             ShortUrlCreate(
                 target_url="https://example.com",
                 slug="abcqwe",
-                description="This string contains more than thirty alphabetic characters.",
+                description=" " * 500,
             )
         error_details = exc_info.exception.errors()[0]
         expected_type = "string_too_long"
