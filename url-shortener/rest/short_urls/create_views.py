@@ -31,14 +31,14 @@ def create_view_validation_response(
     errors: dict[str, str] | None = None,
     form_data: BaseModel | Mapping[str, Any] | None = None,
     *,
-    validated: bool = True,
+    form_validated: bool = True,
 ) -> HTMLResponse:
     model_schema = ShortUrlCreate.model_json_schema()
     context: dict[str, Any] = {}
     context.update(
         errors=errors,
         model_schema=model_schema,
-        validated=validated,
+        form_validated=form_validated,
         form_data=form_data,
     ),
 
