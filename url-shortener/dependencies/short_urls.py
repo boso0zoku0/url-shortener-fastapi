@@ -2,7 +2,6 @@ from typing import Annotated, Optional
 
 from fastapi import Depends, Request
 
-from core.config import settings
 from storage.short_urls import ShortUrlsStorage
 
 

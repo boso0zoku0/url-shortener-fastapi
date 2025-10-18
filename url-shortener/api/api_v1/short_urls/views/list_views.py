@@ -2,11 +2,11 @@ import logging
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from api.api_v1.auth.services.redis_tokens_helper import db_redis_tokens
-from api.api_v1.dependencies import (
+from api.api_v1.short_urls.dependencies import (
     api_token_or_basic_auth_for_unsafe_methods,
 )
 from schemas.short_url import ShortUrl, ShortUrlCreate, ShortUrlRead
+from services.auth import db_redis_tokens
 from storage.short_urls.crud import storage
 from storage.short_urls.exceptions import ShortUrlAlreadyExists
 

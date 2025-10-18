@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-  All Short URLs
+  Short URLs
 {% endblock %}
 
 {% block main %}
@@ -21,7 +21,9 @@
           <tr>
             <td><a target="_blank" href="{{ url.target_url }}">{{ url.target_url }}</a></td>
             <td>{{ url.slug }}</td>
-            <td>{% if url.description %}url.description
+            <td>
+            {% if url.description %}
+              {{ url.description }}
             {% else %}
               <code>-</code>
             {% endif %}
@@ -32,6 +34,6 @@
         </tbody>
       </table>
     </div>
-    <div><a class="btn btn-primary" href="{{ url_for('short-urls:create_views') }}">Create Short Url</a></div>
+    <div><a class="btn btn-success" href="{{ url_for('short-urls:create_views') }}">Create Short Url</a></div>
   {% endif %}
 {% endblock %}

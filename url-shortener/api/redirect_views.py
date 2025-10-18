@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from starlette.responses import RedirectResponse
 
-from api.api_v1.dependencies import prefetch_url
+from api.api_v1.short_urls.dependencies import prefetch_url
 from schemas.short_url import ShortUrl
 
 router = APIRouter(

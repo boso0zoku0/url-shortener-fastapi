@@ -1,7 +1,7 @@
 from unittest import TestCase
 
-from api.api_v1.dependencies import UNSAFE_METHODS, prefetch_url
-from dependencies.short_urls import GetShortUrlsStorage
+from api.api_v1.short_urls.dependencies import prefetch_url
+from dependencies.auth import UNSAFE_METHODS
 from storage.short_urls.crud import storage
 
 
