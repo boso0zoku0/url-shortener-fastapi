@@ -1,6 +1,8 @@
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
+
 from core.config import settings
 from storage.short_urls import ShortUrlsStorage
 
