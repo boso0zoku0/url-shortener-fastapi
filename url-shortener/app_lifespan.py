@@ -1,5 +1,6 @@
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+from typing import TYPE_CHECKING
 
 from fastapi import FastAPI
 
@@ -7,6 +8,7 @@ from core.config import settings
 from storage.short_urls import ShortUrlsStorage
 
 
+# noinspection PyUnresolvedReferences
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     app.state.short_urls_storage = ShortUrlsStorage(
