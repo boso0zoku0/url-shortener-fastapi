@@ -1,57 +1,27 @@
 from collections.abc import Mapping
-from typing import Annotated, Any
+from typing import Any
 
-from fastapi import APIRouter, Form, Request
+from fastapi import APIRouter, Request
 from pydantic import BaseModel, ValidationError
 from starlette import status
 from starlette.responses import HTMLResponse, RedirectResponse
 
 from dependencies.short_urls import GetShortUrlsStorage
 from schemas import ShortUrlCreate
+from services.short_urls.form_response_helper import FormResponseHelper
 from storage.short_urls.exceptions import ShortUrlAlreadyExists
 from templating import templates
 
 router = APIRouter(prefix="/create")
 
+form_helper = FormResponseHelper(
+    model_schema=ShortUrlCreate, template_name="films/create.html"
+)
+
 
 @router.get("/", name="short-urls:create_views")
 def get_page_create_short_url(request: Request) -> HTMLResponse:
-    context: dict[str, Any] = {}
-    model_schema = ShortUrlCreate.model_json_schema()
-    context.update(model_schema=model_schema)
-    return templates.TemplateResponse(
-        request=request,
-        name="short-urls/create.html",
-        context=context,
-    )
-
-
-def create_view_validation_response(
-    request: Request,
-    errors: dict[str, str] | None = None,
-    form_data: BaseModel | Mapping[str, Any] | None = None,
-    *,
-    form_validated: bool = True,
-) -> HTMLResponse:
-    model_schema = ShortUrlCreate.model_json_schema()
-    context: dict[str, Any] = {}
-    context.update(
-        errors=errors,
-        model_schema=model_schema,
-        form_validated=form_validated,
-        form_data=form_data,
-    ),
-
-    return templates.TemplateResponse(
-        request=request,
-        name="short-urls/create.html",
-        context=context,
-        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-    )
-
-
-def parse_pydantic_error(error: ValidationError) -> dict[str, str]:
-    return {f"{err['loc'][0]}": err["msg"] for err in error.errors()}
+    return form_helper.render(request=request)
 
 
 @router.post("/", name="short-urls:create", response_model=None)
@@ -62,12 +32,13 @@ async def create_short_url(
     async with request.form() as form:
         try:
             short_url_create = ShortUrlCreate.model_validate(form)
+
         except ValidationError as e:
-            errors = parse_pydantic_error(e)
-            return create_view_validation_response(
+            return form_helper.render(
                 request=request,
-                errors=errors,
+                pydantic_error=e,
                 form_data=form,
+                form_validated=True,
             )
 
     try:
@@ -84,8 +55,6 @@ async def create_short_url(
             status_code=status.HTTP_303_SEE_OTHER,
         )
 
-    return create_view_validation_response(
-        request=request,
-        errors=errors,
-        form_data=short_url_create,
+    return form_helper.render(
+        request=request, errors=errors, form_validated=True, form_data=short_url_create
     )
